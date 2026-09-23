@@ -1,0 +1,122 @@
+/**
+ * ANIMATIONS & KEYFRAMES
+ * Hiệu ứng chuyển động lung linh, hào quang vầng trăng, đung đưa đèn lồng và sao lấp lánh.
+ */
+
+/* Vầng trăng phát sáng & nhịp thở hào quang */
+@keyframes moonGlow {
+    0% {
+        box-shadow: 
+            0 0 40px rgba(255, 235, 150, 0.45),
+            0 0 90px rgba(255, 195, 80, 0.3),
+            0 0 160px rgba(255, 160, 40, 0.2);
+    }
+    50% {
+        box-shadow: 
+            0 0 60px rgba(255, 245, 180, 0.65),
+            0 0 120px rgba(255, 210, 100, 0.45),
+            0 0 220px rgba(255, 180, 60, 0.3);
+    }
+    100% {
+        box-shadow: 
+            0 0 40px rgba(255, 235, 150, 0.45),
+            0 0 90px rgba(255, 195, 80, 0.3),
+            0 0 160px rgba(255, 160, 40, 0.2);
+    }
+}
+
+/* Đám mây vàng cổ điển trôi bồng bềnh qua vầng trăng */
+@keyframes cloudDrift1 {
+    0% { transform: translateX(-15px) translateY(0); }
+    50% { transform: translateX(25px) translateY(-8px); }
+    100% { transform: translateX(-15px) translateY(0); }
+}
+
+@keyframes cloudDrift2 {
+    0% { transform: translateX(20px) translateY(0); }
+    50% { transform: translateX(-20px) translateY(6px); }
+    100% { transform: translateX(20px) translateY(0); }
+}
+
+/* Đèn lồng đung đưa êm ái */
+@keyframes lanternSway {
+    0% { transform: rotate(-3deg) translateY(0); }
+    50% { transform: rotate(3deg) translateY(-8px); }
+    100% { transform: rotate(-3deg) translateY(0); }
+}
+
+/* Tia sáng quét qua thẻ bài (Shimmer) */
+@keyframes shimmerGlow {
+    0% { transform: translateX(-150%) rotate(25deg); }
+    100% { transform: translateX(250%) rotate(25deg); }
+}
+
+/* Trái tim nhịp đập ngọt ngào */
+@keyframes heartPulse {
+    0% { transform: scale(1); }
+    14% { transform: scale(1.18); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.18); }
+    70% { transform: scale(1); }
+}
+
+/* Nút bấm thắp sáng nhấp nháy thu hút */
+@keyframes pulseLight {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 200, 80, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 20px rgba(255, 200, 80, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 200, 80, 0);
+    }
+}
+
+/* Đĩa than / Mặt trăng xoay khi phát nhạc */
+@keyframes spinVinyl {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Bật mờ dần màn hình mở đầu */
+@keyframes fadeOutEnchant {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(1.08);
+        filter: blur(8px);
+        pointer-events: none;
+    }
+}
+
+/* Hiệu ứng nổi bồng bềnh (Floating) */
+@keyframes floatGentle {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Cuộn giấy thư tình mở ra */
+@keyframes scrollUnroll {
+    0% {
+        opacity: 0;
+        transform: scale(0.85) translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Hào quang lấp lánh văn tự */
+@keyframes textGoldGlow {
+    0%, 100% {
+        text-shadow: 0 0 10px rgba(255, 223, 120, 0.5), 0 0 20px rgba(255, 184, 48, 0.3);
+    }
+    50% {
+        text-shadow: 0 0 20px rgba(255, 240, 180, 0.8), 0 0 35px rgba(255, 195, 60, 0.6);
+    }
+}

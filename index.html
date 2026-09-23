@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tết Trung Thu Tặng Mĩ Diên 🌕💛 Tấn Anh</title>
+    
+    <!-- Open Graph Meta Tags (Hiển thị preview tuyệt đẹp khi gửi qua Zalo / Facebook Messenger) -->
+    <meta property="og:title" content="Tết Trung Thu Dành Riêng Cho Mĩ Diên 🌕💛">
+    <meta property="og:description" content="Món quà Trung Thu ngọt ngào, lung linh và dễ thương nhất từ Tấn Anh gửi tặng Trần Thị Mỹ Duyên (Mĩ Diên).">
+    <meta property="og:image" content="images/bg-moon.jpg">
+    <meta property="og:type" content="website">
+    
+    <!-- Google Fonts Hiện Đại -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Lớp Canvas Đồ Họa Đèn Trời & Pháo Hoa Ánh Sáng -->
+    <canvas id="sky-canvas"></canvas>
+    <canvas id="firework-canvas"></canvas>
+
+    <!-- MÀN CHÀO MỞ ĐẦU (OPENING ENCHANTMENT SCREEN) -->
+    <div id="opening-screen" class="opening-screen">
+        <div class="opening-card">
+            <div class="lantern-holder">
+                <img src="images/tananh-midyen-moon.jpg" alt="Tấn Anh & Mĩ Diên Ngắm Trăng" class="opening-lantern-img">
+            </div>
+            <h1 id="welcome-title" class="welcome-title">Món Quà Trung Thu Gửi Mĩ Diên 🌕💛</h1>
+            <p id="welcome-subtitle" class="welcome-subtitle">Chạm nhẹ vào chiếc đèn lồng vàng để thắp sáng đêm rằm dành riêng cho em nhé...</p>
+            <button id="start-lantern-btn" class="start-btn">
+                <span class="btn-sparkle">✨</span>
+                <span id="lantern-prompt">Chạm để thắp sáng đêm trăng ✨</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- GIAO DIỆN CHÍNH (MAIN CONTENT) -->
+    <main id="main-content" class="main-content hidden">
+        <div class="container">
+            
+            <!-- PHÂN KHU VẦNG TRĂNG & TIÊU ĐỀ (HERO) -->
+            <section class="hero-section">
+                <!-- Vầng trăng rằm 3D phát sáng hào quang -->
+                <div class="moon-container" title="Chạm vào vầng trăng để nở pháo hoa tình yêu!">
+                    <div class="celestial-moon">
+                        <div class="moon-crater c1"></div>
+                        <div class="moon-crater c2"></div>
+                        <div class="moon-crater c3"></div>
+                        <div class="moon-crater c4"></div>
+                        
+                        <!-- SVG Bóng Thỏ Ngọc Ngắm Trăng -->
+                        <svg class="moon-rabbit-silhouette" viewBox="0 0 100 100" fill="#3b2003">
+                            <path d="M45,75 C45,65 52,58 60,58 C68,58 75,65 75,75 C75,85 68,90 60,90 C52,90 45,85 45,75 Z"></path>
+                            <path d="M58,58 C58,50 63,44 70,44 C77,44 82,50 82,58 C82,64 77,68 70,68 C63,68 58,64 58,58 Z"></path>
+                            <!-- Tai thỏ -->
+                            <path d="M68,46 C66,35 68,20 72,18 C75,16 77,28 75,44 Z"></path>
+                            <path d="M74,47 C75,36 80,22 84,21 C87,20 86,32 81,46 Z"></path>
+                            <!-- Đuôi thỏ tròn -->
+                            <circle cx="43" cy="78" r="6"></circle>
+                        </svg>
+                    </div>
+
+                    <!-- Mây vàng cổ điển lượn quanh trăng -->
+                    <svg class="cloud-drift cloud-left" viewBox="0 0 100 40" fill="none">
+                        <path d="M10,30 Q25,10 45,25 Q65,15 85,30 Q95,35 75,38 L15,38 Z" fill="rgba(255, 235, 160, 0.45)"></path>
+                    </svg>
+                    <svg class="cloud-drift cloud-right" viewBox="0 0 100 40" fill="none">
+                        <path d="M15,32 Q35,15 55,28 Q75,18 90,32 L20,35 Z" fill="rgba(255, 235, 160, 0.4)"></path>
+                    </svg>
+                </div>
+
+                <div id="header-badge" class="header-badge">🌕 Tết Trung Thu - Ngàn Ánh Trăng Yêu Thương</div>
+                <h2 id="main-headline" class="main-headline">
+                    Trăng Rằm Đẹp Nhất Là Khi Có <span class="recipient-name">Em</span>
+                </h2>
+                <p id="sub-headline" class="sub-headline">
+                    Dẫu ngàn vì sao trên bầu trời có lung linh đến đâu, ánh mắt em vẫn là vầng trăng rạng ngời nhất trong lòng anh.
+                </p>
+
+                <!-- Các nút hành động chính -->
+                <div class="action-buttons-group">
+                    <button id="open-letter-btn" class="action-btn btn-primary">
+                        <span>💌</span> Đọc Thư Tình Dưới Trăng
+                    </button>
+                    <a href="#wish-section" class="action-btn btn-secondary">
+                        <span>🏮</span> Thả Thiên Đăng Ước Nguyện
+                    </a>
+                    <a href="#gallery-section" class="action-btn btn-secondary">
+                        <span>📷</span> Kỷ Niệm Tình Yêu
+                    </a>
+                </div>
+            </section>
+
+            <!-- PHÂN KHU ĐỒNG HỒ ĐẾM NGÀY YÊU THƯƠNG (LOVE COUNTER) -->
+            <section class="love-counter-wrapper tilt-card interactive-card">
+                <div class="bunny-love-badge">
+                    <img src="images/chibi-couple-1.png" alt="Tấn Anh xoa đầu Mĩ Diên" class="counter-bunny-avatar">
+                    <div class="bunny-speech-bubble">Tấn Anh 💛 Mĩ Diên</div>
+                </div>
+                <div class="counter-header">
+                    <span>🌙</span>
+                    <h3>Chúng Mình Đã Yêu Nhau Được</h3>
+                    <span>✨</span>
+                </div>
+                <div class="counter-grid">
+                    <div class="counter-box">
+                        <div id="counter-days" class="counter-num">0</div>
+                        <div class="counter-unit">Ngày</div>
+                    </div>
+                    <div class="counter-box">
+                        <div id="counter-hours" class="counter-num">00</div>
+                        <div class="counter-unit">Giờ</div>
+                    </div>
+                    <div class="counter-box">
+                        <div id="counter-minutes" class="counter-num">00</div>
+                        <div class="counter-unit">Phút</div>
+                    </div>
+                    <div class="counter-box">
+                        <div id="counter-seconds" class="counter-num">00</div>
+                        <div class="counter-unit">Giây</div>
+                    </div>
+                </div>
+                <p class="counter-footer">
+                    Kể từ ngày định mệnh <strong id="start-date-text">...</strong>, mỗi ngày bên em đều là một ngày rằm rạng ngời hạnh phúc.
+                </p>
+            </section>
+
+            <!-- PHÂN KHU THẢ ĐÈN TRỜI ƯỚC NGUYỆN (WISH BOX) -->
+            <section id="wish-section" class="wish-section interactive-card">
+                <div class="wish-chibi-mascot">
+                    <img src="images/chibi-couple-3.png" alt="Mĩ Diên ôm Tấn Anh" class="wish-couple-img">
+                </div>
+                <h3 class="section-title">🏮 Thả Thiên Đăng Lên Bầu Trời Sao</h3>
+                <p class="section-desc">Gửi gắm một điều ước nhỏ đến vầng trăng tròn, chiếc đèn hoa đăng sẽ bay vút lên bầu trời mang theo lời nguyện cầu của em.</p>
+                
+                <div class="wish-input-bar">
+                    <input type="text" id="wish-input" class="wish-input" placeholder="Nhập điều ước của em vào đây..." maxlength="60">
+                    <button id="send-wish-btn" class="wish-submit-btn">
+                        <span>🏮</span> Thả Lên Trời
+                    </button>
+                </div>
+
+                <!-- Gợi ý điều ước nhanh -->
+                <div class="wish-presets">
+                    <span class="wish-preset-pill">✨ Chúc em luôn xinh đẹp & rạng rỡ</span>
+                    <span class="wish-preset-pill">💖 Mong chúng mình mãi bên nhau hạnh phúc</span>
+                    <span class="wish-preset-pill">🌸 Chúc công chúa nhỏ bình an</span>
+                    <span class="wish-preset-pill">🌙 Yêu em nhiều hơn mỗi ngày</span>
+                </div>
+
+                <div id="wish-feedback" class="wish-feedback"></div>
+            </section>
+
+            <!-- PHÂN KHU BỘ SƯU TẬP KỶ NIỆM (MEMORIES GALLERY) -->
+            <section id="gallery-section" class="gallery-section">
+                <div style="text-align: center;">
+                    <h3 class="section-title">📷 Khoảnh Khắc Ánh Trăng Của Chúng Ta</h3>
+                    <p class="section-desc">Những khoảnh khắc ngọt ngào đã được khắc ghi trong từng mùa trăng đi qua.</p>
+                </div>
+                <div id="memories-grid" class="memories-grid">
+                    <!-- Javascript tự động render danh sách ảnh từ config.js -->
+                </div>
+            </section>
+
+            <!-- CHÂN TRANG FOOTER -->
+            <footer class="footer">
+                <p>Created with <span class="footer-heart">❤️</span> by <span class="sender-name">Anh Yêu</span> for <span class="recipient-name">Em Bé Của Anh</span></p>
+                <p style="margin-top: 0.4rem; font-size: 0.85rem; opacity: 0.7;">Tết Trung Thu Trọn Vẹn Yêu Thương 🌕 2026</p>
+            </footer>
+
+        </div>
+    </main>
+
+    <!-- MODAL BỨC THƯ TÌNH DƯỚI TRĂNG (SECRET LOVE LETTER) -->
+    <div id="letter-modal" class="letter-modal">
+        <div class="letter-scroll">
+            <button id="close-letter-btn" class="close-btn" title="Đóng thư">&times;</button>
+            <div class="letter-header">
+                <div class="letter-photo-frame">
+                    <img src="images/my-duyen.jpg" alt="Trần Thị Mỹ Duyên" class="letter-girl-photo">
+                    <span class="photo-caption">Nàng Thơ Của Tấn Anh: Trần Thị Mỹ Duyên 💛</span>
+                </div>
+                <div class="letter-seal-icon">💌</div>
+                <h3 id="letter-title" class="letter-title">Bức Thư Gửi Mĩ Diên Dễ Thương Của Tấn Anh</h3>
+            </div>
+            <div id="letter-body" class="letter-body">
+                <!-- Javascript hiệu ứng Typewriter tự động gõ chữ từng dòng -->
+            </div>
+        </div>
+    </div>
+
+    <!-- NÚT PHÁT NHẠC NỔI (FLOATING MUSIC PLAYER) -->
+    <button id="music-toggle-btn" class="music-toggle-btn" title="Bật / Tắt Nhạc Lãng Mạn">
+        <span class="music-icon">🎵</span>
+    </button>
+
+    <!-- Scripts nạp theo thứ tự -->
+    <script src="js/config.js"></script>
+    <script src="js/sky-lanterns.js"></script>
+    <script src="js/fireworks.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
