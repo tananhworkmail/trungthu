@@ -10,7 +10,8 @@ class FireworkEngine {
         this.ctx = this.canvas.getContext('2d');
         
         this.particles = [];
-        this.pixelRatio = window.devicePixelRatio || 1;
+        this.pixelRatio = Math.min(window.devicePixelRatio || 1, matchMedia('(pointer: coarse)').matches || innerWidth < 700 ? 1 : 1.5);
+        this.frame = null;
         this.width = 0;
         this.height = 0;
         
@@ -20,7 +21,6 @@ class FireworkEngine {
     init() {
         this.resize();
         window.addEventListener('resize', () => this.resize());
-        this.animate();
     }
 
     resize() {
@@ -70,9 +70,11 @@ class FireworkEngine {
                 sparkle: Math.random() > 0.5
             });
         }
+        if (this.frame === null) this.animate();
     }
 
     animate() {
+        this.frame = null;
         this.ctx.clearRect(0, 0, this.width, this.height);
 
         for (let i = this.particles.length - 1; i >= 0; i--) {
@@ -116,7 +118,7 @@ class FireworkEngine {
             this.ctx.restore();
         }
 
-        requestAnimationFrame(() => this.animate());
+        if (this.particles.length) this.frame = requestAnimationFrame(() => this.animate());
     }
 }
 

@@ -16,7 +16,9 @@ Trước khi upload lên hosting, bạn hãy mở file **`js/config.js`** để 
 
 2. **Ngày kỷ niệm bắt đầu yêu nhau**:
    ```javascript
-   anniversaryDate: "2024-02-14", // Định dạng: Năm-Tháng-Ngày (YYYY-MM-DD)
+   anniversaryDate: "2026-08-22", // Định dạng: Năm-Tháng-Ngày (YYYY-MM-DD)
+   anniversaryTime: "18:45",
+   anniversaryUtcOffset: "+07:00", // Giờ Việt Nam
    ```
 
 3. **Bức thư tình dưới ánh trăng (`letterContent`)**:
@@ -51,13 +53,19 @@ Trước khi upload lên hosting, bạn hãy mở file **`js/config.js`** để 
 3. Nếu bên trong `htdocs` có sẵn file mặc định của hosting (như `index2.html` hay `DO NOT UPLOAD FILES HERE`), bạn hãy xóa chúng đi.
 4. Tải toàn bộ các file và thư mục của dự án lên:
    - File `index.html`
-   - Thư mục `css/` (gồm `style.css`, `animations.css`)
-   - Thư mục `js/` (gồm `config.js`, `sky-lanterns.js`, `fireworks.js`, `main.js`)
+   - Toàn bộ thư mục `css/`, gồm cả các file hiệu ứng `cinema.css`, `galaxy.css`, `enchantment.css`, `journey3d.css`.
+   - Toàn bộ thư mục `js/`, **bao gồm `js/vendor/three/`**. Hành trình 3D dùng thư viện đã lưu sẵn trong dự án; không cần npm hay bước build trên hosting.
    - Thư mục `images/` (các hình ảnh)
    - Thư mục `audio/` (file nhạc nếu có)
    - Thư mục `api/` (xử lý điều ước)
 
 *(Mẹo: Bạn có thể nén toàn bộ các file thành 1 file `.zip`, upload lên rồi bấm chuột phải chọn **Extract** vào `htdocs`)*.
+
+Để xem bản 3D ở máy tính, chạy `python -m http.server 8765` trong thư mục dự án rồi mở `http://localhost:8765`. Không mở trực tiếp `index.html` bằng `file://`, vì trình duyệt có thể chặn ES modules. Trình duyệt không hỗ trợ WebGL sẽ dùng hiệu ứng dự phòng và vẫn đọc thư, gửi điều ước được.
+
+Bản giao diện ưu tiên điện thoại cầm dọc. Cảnh tự chạy; vuốt trái/phải để đi tiếp/quay lại, hoặc dùng các nút phía dưới. Camera tự căn theo chiều rộng màn hình, không cần chuột hay quyền cảm biến. Hiệu ứng giảm độ phân giải khi tốc độ dựng hình thấp; tạm dừng phía sau lá thư và khi nhập điều ước.
+
+Để xem trên điện thoại trước khi upload, nối điện thoại và máy tính cùng Wi-Fi, chạy `python -m http.server 8765 --bind 0.0.0.0`, rồi mở `http://<IPv4-của-máy-tính>:8765` trên điện thoại (xem IPv4 bằng `ipconfig`). Địa chỉ `localhost` trên điện thoại không trỏ đến máy tính. Sau khi upload, gửi đường dẫn HTTPS của website để xem trên điện thoại.
 
 ---
 

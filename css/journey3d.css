@@ -1,0 +1,67 @@
+/* WebGL meshes and HTML captions are projected by the same perspective camera. */
+#journey-webgl { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+.journey-touch-hint { display: none; }
+.journey-labels { position: absolute; inset: 0; z-index: 3; pointer-events: none; overflow: hidden; }
+.journey-labels .film-scene { inset: auto; width: 470px; height: auto; opacity: 1; visibility: visible; perspective: none; transition: none; pointer-events: none; }
+.journey-labels.mobile-labels .film-scene { top: 0; left: 0; transform-origin: center; transform-style: flat; }
+.letter-modal { z-index: 1200; }
+.cinema.is-keyboard-open ~ .music-toggle-btn { visibility: hidden; }
+.journey-labels .scene-camera { position: relative; inset: auto; transform: none !important; will-change: auto; }
+.journey-labels .scene-camera::after { display: none; }
+.journey-labels .scene-art, .journey-labels .scene-backdrop, .has-3d-world .foreground-lantern { display: none; }
+.journey-labels .scene-copy { position: relative; inset: auto; width: 100%; transform: none !important; text-align: left; }
+.journey-labels .scene-copy > * { opacity: 1; transform: none; transition: none; }
+.journey-labels .scene-copy h2 { font-size: 39px; line-height: 1.28; text-shadow: 0 2px 8px #030819, 0 0 30px #050716; }
+.journey-labels .scene-copy p { font-size: 15px; line-height: 1.8; color: #f0e9e6; }
+.journey-labels .scene-eyebrow { font-size: 10px; letter-spacing: .25em; }
+.has-3d-world #film-dust { display: none; }
+.has-3d-world .cosmic-aurora { opacity: .35; }
+.has-3d-world .film-stage { z-index: 4; pointer-events: none; perspective: none; }
+.has-3d-world .film-stage .scene-art, .has-3d-world .film-stage .scene-backdrop { display: none; }
+.has-3d-world .film-stage .scene-camera { transform: none !important; }
+.has-3d-world .film-finale { transform: none; transition: opacity .45s; pointer-events: none; }
+.has-3d-world .film-finale .scene-camera { transform-style: flat; }
+.has-3d-world .film-finale .scene-camera::after { transform: none; z-index: 0; background: linear-gradient(90deg, #05081c99, #05081c22 65%, transparent); }
+.has-3d-world.at-finale:not(.is-traveling) .film-finale .scene-copy { pointer-events: auto; }
+.has-3d-world.is-traveling .film-finale { opacity: 0; visibility: hidden; }
+.has-3d-world .film-header, .has-3d-world .film-controls { z-index: 8; }
+.has-3d-world .film-finale .scene-copy { transform: translateY(-45%); }
+@media (max-width: 700px) {
+    .cinema.main-content { height: 100svh; bottom: auto; touch-action: pan-y pinch-zoom; }
+    .film-header { top: max(24px, calc(env(safe-area-inset-top) + 12px)); left: max(20px, env(safe-area-inset-left)); }
+    .music-toggle-btn { top: max(14px, calc(env(safe-area-inset-top) + 6px)); right: max(16px, env(safe-area-inset-right)); }
+    .film-controls { bottom: max(10px, env(safe-area-inset-bottom)); left: 20px; right: 20px; }
+    .film-control-row { gap: 6px; }
+    #film-scene-label { font-size: 10px; max-width: calc(100% - 140px); line-height: 1.6; }
+    .film-playback { gap: 2px; }
+    .film-chapter { min-height: 32px; }
+    .journey-touch-hint { display: block; position: absolute; top: max(72px, calc(env(safe-area-inset-top) + 58px)); left: 12px; right: 12px; text-align: center; font-size: 10px; letter-spacing: .04em; color: #d9cee6; z-index: 8; pointer-events: none; transition: opacity .4s; }
+    .has-swiped .journey-touch-hint, .at-finale .journey-touch-hint { opacity: 0; }
+    .journey-labels .film-scene { width: 310px; }
+    .journey-labels .scene-copy { text-align: center; }
+    .journey-labels .scene-copy h2 { font-size: 29px; margin-bottom: 12px; }
+    .journey-labels .scene-copy p { font-size: 14px; font-weight: 500; line-height: 1.7; text-shadow: 0 2px 8px #030819, 0 0 18px #030819; }
+    .journey-labels .scene-eyebrow { font-size: 9px; margin-bottom: 12px; }
+    .cinema .film-finale .scene-copy { top: auto; left: 7%; width: 86%; bottom: calc(108px + env(safe-area-inset-bottom)); max-height: calc(100svh - 190px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); overflow-y: auto; overscroll-behavior: contain; padding: 8px 6px 12px; transform: none; scrollbar-width: thin; }
+    .film-wish-line input { font-size: 16px; }
+    .film-wish label { font-size: 13px; }
+    .finale-actions .celestial-button { min-height: 62px; }
+    .button-copy strong { font-size: 14px; }
+    .film-wish-line button { min-width: 66px; min-height: 48px; }
+    .letter-modal { padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom)); }
+    .letter-scroll { height: calc(100svh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); max-height: calc(100svh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); overscroll-behavior: contain; }
+    .close-btn { min-width: 44px; min-height: 44px; }
+    .opening-screen { min-height: 100svh; padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
+    .cosmic-aurora { filter: none; opacity: .25; }
+    .has-3d-world .film-finale .scene-camera::after { background: linear-gradient(0deg,#05081cc0, #05081c33 70%, transparent); }
+    .cinema.is-keyboard-open .film-finale .scene-copy { position: fixed; top: calc(var(--keyboard-top, 0px) + 12px); bottom: auto; height: calc(var(--keyboard-height) - 24px); max-height: none; padding-top: 12px; background: #070b23ed; border-radius: 20px; }
+    .is-keyboard-open .film-header, .is-keyboard-open .film-controls { visibility: hidden; }
+}
+@media (max-width: 700px) and (max-height: 650px) {
+    .journey-labels .scene-copy h2 { font-size: 25px; margin-bottom: 8px; }
+    .journey-labels .scene-copy p { font-size: 13px; }
+    .journey-labels .scene-eyebrow { margin-bottom: 8px; }
+}
+@media (max-height: 700px) {
+    .has-3d-world .film-finale .scene-copy { transform: none; }
+}

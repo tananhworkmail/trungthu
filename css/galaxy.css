@@ -1,0 +1,196 @@
+/* An open sky: the constellation lives directly in the galaxy. */
+.opening-screen {
+    display: block;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background: #030510;
+    isolation: isolate;
+}
+#galaxy-canvas, .galaxy-vignette {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+.galaxy-vignette {
+    background: radial-gradient(ellipse at 50% 48%, transparent 22%, rgba(2, 4, 14, .38) 100%), linear-gradient(#03051080, transparent 30%, transparent 70%, #030510cc);
+}
+.galaxy-caption, .galaxy-footnote {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: .62rem;
+    letter-spacing: .3em;
+    color: #c3bdd4;
+}
+.galaxy-caption { top: max(24px, env(safe-area-inset-top)); }
+.galaxy-caption span { margin: 0 18px; color: #f5d9a0; }
+.galaxy-caption b { font-weight: 500; text-transform: uppercase; }
+.galaxy-footnote { position: relative; display: block; padding: 0 16px max(20px, env(safe-area-inset-bottom)); font-size: .56rem; }
+.opening-card.constellation-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100svh - 40px);
+    width: 100%;
+    max-width: none;
+    padding: 82px 24px 20px;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    overflow: visible;
+}
+.constellation-card::before { display: none; }
+.constellation-intro { max-width: 780px; }
+.constellation-intro .eyebrow { color: #dabd88; font-size: .6rem; letter-spacing: .32em; }
+.constellation-intro .welcome-title {
+    max-width: 740px;
+    margin: 15px auto 12px;
+    font-size: clamp(1.8rem, 3.5vw, 3.2rem);
+    font-weight: 600;
+    line-height: 1.25;
+    text-wrap: balance;
+    color: #fff1dc;
+    text-shadow: 0 2px 28px #d9ad7150;
+    animation: skyTextReveal 1.6s ease both;
+}
+.constellation-intro .welcome-subtitle {
+    margin: 0;
+    font-size: .88rem;
+    color: #c4c0d9;
+    animation: skyTextReveal 1.8s .2s ease both;
+}
+.constellation-stage {
+    width: min(580px, 84vw, 56svh);
+    aspect-ratio: 1.22;
+    margin: 26px auto 0;
+    flex-shrink: 0;
+}
+.constellation-halo {
+    inset: 0;
+    background: radial-gradient(ellipse, #8e5b9820, transparent 65%);
+    transition: background 1s;
+}
+.constellation-lines { width: 100%; height: 100%; pointer-events: none; }
+.constellation-lines line {
+    stroke: #ffe6b4;
+    stroke-width: .28;
+    filter: drop-shadow(0 0 3px #ffbd7d);
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+    animation: skyLineDraw .65s ease-out both;
+}
+.constellation-lines .heart-fill {
+    fill: #e8a379;
+    opacity: 0;
+    transition: opacity 1.8s ease;
+}
+.completed .constellation-lines .heart-fill { opacity: .065; }
+.constellation-star {
+    width: 44px;
+    height: 44px;
+    background: transparent;
+    box-shadow: none;
+    color: transparent;
+    outline-offset: 3px;
+}
+.constellation-star::before {
+    inset: 18px;
+    border: 0;
+    background: #dce6ff;
+    box-shadow: 0 0 6px #e1ddff, 0 0 16px #9bb6ff90;
+    opacity: .65;
+    animation: none;
+    transition: box-shadow .5s, opacity .5s, background .5s;
+}
+.constellation-star::after {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    border: 1px solid transparent;
+    border-radius: 50%;
+}
+.constellation-star.is-next::before, .constellation-star.active::before {
+    background: #fff7d9;
+    opacity: 1;
+    box-shadow: 0 0 7px 2px #fff1c8, 0 0 22px 4px #ffc78690;
+}
+.constellation-star.is-next::after { border-color: #f6d9a9a0; animation: skyStarBeacon 2.2s ease-out infinite; }
+.constellation-star.active, .constellation-star.active:hover { background: transparent; box-shadow: none; }
+.constellation-star:hover { transform: translate(-50%, -50%) scale(1.1); }
+.constellation-star:focus-visible { outline: 1px solid #ffe5ab; }
+.constellation-heart, .constellation-stage.completed .constellation-heart {
+    top: 43%;
+    width: 70%;
+    font-size: 1rem;
+    line-height: 1.35;
+    color: #fff0d7;
+    text-shadow: 0 0 35px #efb57780;
+    opacity: 0;
+    transform: translate(-50%, -40%);
+    transition: opacity 1.6s .35s, transform 1.6s .35s;
+    animation: none;
+    pointer-events: none;
+}
+.constellation-heart span { display: block; font-size: clamp(.65rem, 2vw, .85rem); letter-spacing: .1em; }
+.constellation-heart strong { display: block; font: 600 clamp(2.4rem, 6vw, 4rem) var(--font-handwriting); }
+.constellation-stage.completed .constellation-heart { opacity: 1; transform: translate(-50%, -50%); }
+.constellation-status { font-size: .8rem; color: #d4cadd; min-height: 2.8em; max-width: 450px; }
+.constellation-status.complete { color: #fce3b5; }
+.constellation-progress { width: 100px; height: 2px; margin: 4px auto 20px; background: #ffffff18; }
+.constellation-progress span { background: #e4c28e; box-shadow: 0 0 10px #ffd7a2; }
+.constellation-card .start-btn {
+    font-size: .85rem;
+    padding: 13px 28px;
+    min-height: 48px;
+    border: 1px solid #f9d49970;
+    background: linear-gradient(110deg, #f9deb0, #e6b774);
+    box-shadow: 0 0 35px #eabb6020;
+    animation: none;
+}
+.constellation-card .start-btn.is-locked { color: #b4a8b9; background: #ffffff04; border-color: #ffffff1c; opacity: 1; cursor: default; box-shadow: none; }
+.constellation-card .start-btn.is-locked:hover { transform: none; }
+.constellation-card .start-btn.is-unlocked { animation: skyTextReveal .8s both; }
+.auto-constellation-btn {
+    position: relative;
+    z-index: 2;
+    margin-top: 12px;
+    min-height: 44px;
+    padding: 8px 18px;
+    border: 0;
+    background: transparent;
+    color: #c1b4cf;
+    font: 500 .75rem var(--font-body);
+    cursor: pointer;
+    transition: color .2s;
+}
+.auto-constellation-btn:hover { color: #ffe6b4; }
+.auto-constellation-btn:disabled { opacity: .5; cursor: default; }
+.auto-constellation-btn.is-finished { visibility: hidden; }
+.opening-screen.fade-out { animation: skyDeparture 1.2s ease-in-out forwards; pointer-events: none; }
+@keyframes skyDeparture { to { opacity: 0; transform: scale(1.08); filter: blur(8px); } }
+@keyframes skyTextReveal { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes skyLineDraw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes skyStarBeacon { 0% { transform: scale(.7); opacity: 0; } 35% { opacity: .9; } 100% { transform: scale(1.6); opacity: 0; } }
+@media (max-width: 600px) {
+    .opening-card.constellation-card { padding: 74px 20px 20px; }
+    .constellation-intro .welcome-title { max-width: 360px; font-size: 2rem; }
+    .constellation-intro .welcome-subtitle { max-width: 310px; margin: auto; font-size: .8rem; }
+    .constellation-stage { width: min(86vw, 53svh); margin-top: 30px; }
+    .galaxy-footnote { font-size: .46rem; letter-spacing: .17em; }
+}
+@media (max-height: 700px) and (min-width: 601px) {
+    .opening-card.constellation-card { padding-top: 60px; }
+    .constellation-intro .welcome-title { font-size: 2rem; }
+    .constellation-stage { margin-top: 16px; width: min(420px, 53svh); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .opening-screen *, .opening-screen.fade-out { animation: none !important; transition: none !important; }
+    .opening-screen.fade-out { opacity: 0; }
+}

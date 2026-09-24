@@ -16,7 +16,8 @@ class SkyLanternEngine {
         
         this.width = 0;
         this.height = 0;
-        this.pixelRatio = window.devicePixelRatio || 1;
+        this.mobile = matchMedia('(pointer: coarse)').matches || innerWidth < 700;
+        this.pixelRatio = Math.min(window.devicePixelRatio || 1, this.mobile ? 1 : 1.5);
         
         this.mouse = { x: null, y: null };
         this.isRunning = false;
@@ -59,10 +60,10 @@ class SkyLanternEngine {
         });
 
         // Tạo các vì sao nền
-        this.createStars(180);
+        this.createStars(this.mobile ? 65 : 180);
         
         // Tạo đom đóm lấp lánh
-        this.createFireflies(45);
+        this.createFireflies(this.mobile ? 18 : 45);
         
         // Tạo đèn lồng ban đầu
         const initialLanterns = window.innerWidth < 768 ? 16 : 28;

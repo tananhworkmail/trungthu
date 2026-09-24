@@ -4,118 +4,71 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. ÁP DỤNG THÔNG TIN TỪ CONFIG.JS
     applyConfiguration();
-
-    // 2. KHỞI TẠO CÁC ENGINE CANVAS ĐỒ HỌA
-    const lanternEngine = new SkyLanternEngine('sky-canvas');
-    const fireworkEngine = new FireworkEngine('firework-canvas');
-
-    // 3. QUẢN LÝ ÂM NHẠC & SYNTHESIZER
     const audioController = new RomanticAudioPlayer(CONFIG.audioSrc);
-
-    // 4. MÀN CHÀO MỞ ĐẦU (CURTAIN OPENING)
-    const openingScreen = document.getElementById('opening-screen');
-    const startLanternBtn = document.getElementById('start-lantern-btn');
-    const mainContent = document.getElementById('main-content');
-
-    startLanternBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        
-        // Kích hoạt pháo hoa trái tim bùng nổ tại nút
-        const rect = startLanternBtn.getBoundingClientRect();
-        fireworkEngine.createBurst(rect.left + rect.width / 2, rect.top + rect.height / 2, 60, true);
-        
-        // Bắt đầu nhạc
-        audioController.play();
-
-        // Ẩn màn hình mở đầu với hiệu ứng mờ dần lung linh
-        openingScreen.classList.add('fade-out');
-        mainContent.classList.remove('hidden');
-        mainContent.classList.add('visible');
-
+    const film = new MoonlightCinema();
+    const opening = document.getElementById('opening-screen');
+    let entering = false;
+    const enterFilm = () => {
+        if (entering) return;
+        entering = true;
+        document.getElementById('skip-opening-btn').disabled = true;
+        film.start();
+        opening.classList.add('fade-out');
         setTimeout(() => {
-            openingScreen.style.display = 'none';
-        }, 1200);
-
-        // Bắn thêm chùm pháo hoa chúc mừng trên cao
-        setTimeout(() => {
-            fireworkEngine.createBurst(window.innerWidth * 0.5, window.innerHeight * 0.28, 50, false);
-        }, 700);
-    });
-
-    // 5. HIỆU ỨNG CHẠM VÀO VẦNG TRĂNG ĐỂ NỞ HOA LẤP LÁNH (CỰC KỲ DỄ THƯƠNG TRÊN MOBILE)
-    const moonContainer = document.querySelector('.moon-container');
-    if (moonContainer) {
-        const triggerMoonBurst = (e) => {
-            const rect = moonContainer.getBoundingClientRect();
-            const x = rect.left + rect.width / 2;
-            const y = rect.top + rect.height / 2;
-            fireworkEngine.createBurst(x, y, 65, true);
-        };
-        moonContainer.addEventListener('click', triggerMoonBurst);
-    }
-
-    // HIỆU ỨNG CLICK/CHẠM VÀO BẤT KỲ ĐÂU TRÊN BẦU TRỜI ĐỂ TẠO PHÁO HOA/ĐOM ĐÓM
-    document.addEventListener('click', (e) => {
-        // Tránh click vào các input, button hoặc modal
-        if (e.target.closest('button') || e.target.closest('input') || e.target.closest('.interactive-card') || e.target.closest('.moon-container')) {
-            return;
-        }
-        const isHeart = Math.random() < 0.5;
-        fireworkEngine.createBurst(e.clientX, e.clientY, 35, isHeart);
-    });
-
-    // 6. ĐỒNG HỒ ĐẾM NGÀY YÊU NHAU (LOVE COUNTER)
+            opening.hidden = true;
+            opening.style.display = 'none';
+            galaxyOpening.destroy();
+            if (opening.contains(document.activeElement)) document.getElementById('film-pause').focus({ preventScroll: true });
+        }, 900);
+    };
+    const galaxyOpening = new GalaxyOpening({ onComplete: enterFilm });
+    document.getElementById('skip-opening-btn').addEventListener('click', enterFilm);
+    // Create the decorative engines only when a wish is actually released.
+    let lanternEngine, fireworkEngine;
+    initWishBox({ spawnCustomWish(...args) {
+        lanternEngine ||= new SkyLanternEngine('sky-canvas');
+        lanternEngine.spawnCustomWish(...args);
+    } }, { createBurst(...args) {
+        fireworkEngine ||= new FireworkEngine('firework-canvas');
+        fireworkEngine.createBurst(...args);
+    } });
     initLoveCounter();
-
-    // 7. BỨC THƯ TÌNH DƯỚI TRĂNG (TYPEWRITER LOVE LETTER)
     initLoveLetter();
-
-    // 8. HỘP THẢ THIÊN ĐĂNG ƯỚC NGUYỆN (WISH BOX)
-    initWishBox(lanternEngine, fireworkEngine);
-
-    // 9. NÚT ĐIỀU KHIỂN ÂM NHẠC (MUSIC TOGGLE)
     initMusicToggle(audioController);
-
-    // 10. TẠO GALLERY KỶ NIỆM (MEMORIES)
-    renderMemoriesGallery();
-
-    // 11. BẬT HIỆU ỨNG TILT 3D CHO CÁC THẺ KÍNH (GLASS CARDS)
-    init3DTilt();
 });
 
 /**
  * Điền các chuỗi ký tự và tiêu đề từ config.js vào giao diện
  */
 function applyConfiguration() {
+    // Header chính (dùng innerHTML để hiển thị hiệu ứng gradient cho tên Mĩ Diên)
+    const mainHeadlineEl = document.getElementById('main-headline');
+    if (mainHeadlineEl) mainHeadlineEl.innerHTML = CONFIG.mainHeadline;
+
     // Tên bạn gái & bạn trai
     document.querySelectorAll('.recipient-name').forEach(el => el.textContent = CONFIG.recipientName);
     document.querySelectorAll('.sender-name').forEach(el => el.textContent = CONFIG.senderName);
     
     // Màn mở đầu
     const welcomeTitleEl = document.getElementById('welcome-title');
-    if (welcomeTitleEl) welcomeTitleEl.textContent = CONFIG.welcomeTitle;
+    if (welcomeTitleEl) welcomeTitleEl.innerHTML = CONFIG.welcomeTitle;
     
     const welcomeSubtitleEl = document.getElementById('welcome-subtitle');
-    if (welcomeSubtitleEl) welcomeSubtitleEl.textContent = CONFIG.welcomeSubtitle;
+    if (welcomeSubtitleEl) welcomeSubtitleEl.innerHTML = CONFIG.welcomeSubtitle;
     
     const lanternPromptEl = document.getElementById('lantern-prompt');
-    if (lanternPromptEl) lanternPromptEl.textContent = CONFIG.lanternPrompt;
+    if (lanternPromptEl) lanternPromptEl.innerHTML = CONFIG.lanternPrompt;
 
-    // Header chính
     const headerBadgeEl = document.getElementById('header-badge');
-    if (headerBadgeEl) headerBadgeEl.textContent = CONFIG.headerBadge;
-
-    const mainHeadlineEl = document.getElementById('main-headline');
-    if (mainHeadlineEl) mainHeadlineEl.textContent = CONFIG.mainHeadline;
+    if (headerBadgeEl) headerBadgeEl.innerHTML = CONFIG.headerBadge;
 
     const subHeadlineEl = document.getElementById('sub-headline');
-    if (subHeadlineEl) subHeadlineEl.textContent = CONFIG.subHeadline;
+    if (subHeadlineEl) subHeadlineEl.innerHTML = CONFIG.subHeadline;
 
     // Tiêu đề thư
     const letterTitleEl = document.getElementById('letter-title');
-    if (letterTitleEl) letterTitleEl.textContent = CONFIG.letterTitle;
+    if (letterTitleEl) letterTitleEl.innerHTML = CONFIG.letterTitle;
 }
 
 /**
@@ -130,13 +83,17 @@ function initLoveCounter() {
 
     if (!daysEl) return;
 
-    // Phân tích ngày YYYY-MM-DD an toàn cho mọi trình duyệt Mobile (iOS Safari & Chrome)
+    // ISO timestamp with an explicit offset keeps the instant identical worldwide.
     const [year, month, day] = CONFIG.anniversaryDate.split('-').map(Number);
-    const startDate = new Date(year, month - 1, day, 0, 0, 0);
+    const startTime = CONFIG.anniversaryTime;
+    const startTimestamp = `${CONFIG.anniversaryDate}T${startTime}:00${CONFIG.anniversaryUtcOffset}`;
+    const startDate = new Date(startTimestamp);
 
     if (startDateTextEl) {
         const formattedDate = `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
-        startDateTextEl.textContent = formattedDate;
+        startDateTextEl.textContent = `${startTime} · ${formattedDate}`;
+        startDateTextEl.setAttribute('datetime', startTimestamp);
+        startDateTextEl.title = 'Giờ Việt Nam (UTC+7)';
     }
 
     function update() {
@@ -182,21 +139,29 @@ function initLoveLetter() {
     let typeTimeout = null;
 
     openLetterBtn.addEventListener('click', () => {
+        letterModal.inert = false;
         letterModal.classList.add('active');
         document.body.style.overflow = 'hidden';
         startTypewriter();
+        closeLetterBtn.focus();
     });
 
     closeLetterBtn.addEventListener('click', closeModal);
     letterModal.addEventListener('click', (e) => {
         if (e.target === letterModal) closeModal();
     });
+    letterModal.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeModal();
+        if (e.key === 'Tab') { e.preventDefault(); closeLetterBtn.focus(); }
+    });
 
     function closeModal() {
         letterModal.classList.remove('active');
+        letterModal.inert = true;
         document.body.style.overflow = '';
         if (typeTimeout) clearTimeout(typeTimeout);
         isTyping = false;
+        openLetterBtn.focus({ preventScroll: true });
     }
 
     function startTypewriter() {
@@ -306,6 +271,7 @@ function initWishBox(lanternEngine, fireworkEngine) {
         }, 5000);
 
         wishInput.value = '';
+        wishInput.blur();
     });
 
     wishInput.addEventListener('keydown', (e) => {
@@ -316,78 +282,12 @@ function initWishBox(lanternEngine, fireworkEngine) {
 }
 
 /**
- * Hiển thị danh sách ảnh kỷ niệm với hiệu ứng trăng sao
- */
-function renderMemoriesGallery() {
-    const galleryGrid = document.getElementById('memories-grid');
-    if (!galleryGrid) return;
-
-    galleryGrid.innerHTML = '';
-
-    CONFIG.memories.forEach((item, index) => {
-        const card = document.createElement('div');
-        card.className = 'memory-card glass-panel';
-        card.innerHTML = `
-            <div class="memory-img-wrapper">
-                <img src="${item.image}" alt="${item.title}" loading="lazy">
-                <div class="memory-overlay">
-                    <span class="memory-zoom-icon">🔍</span>
-                </div>
-            </div>
-            <div class="memory-info">
-                <h4 class="memory-title">${item.title}</h4>
-                <p class="memory-desc">${item.desc}</p>
-            </div>
-        `;
-
-        // Bấm để phóng to ảnh
-        card.addEventListener('click', () => {
-            openImageLightbox(item.image, item.title, item.desc);
-        });
-
-        galleryGrid.appendChild(card);
-    });
-}
-
-/**
- * Lightbox phóng to ảnh kỷ niệm
- */
-function openImageLightbox(src, title, desc) {
-    let lightbox = document.getElementById('image-lightbox');
-    if (!lightbox) {
-        lightbox = document.createElement('div');
-        lightbox.id = 'image-lightbox';
-        lightbox.className = 'lightbox-modal';
-        lightbox.innerHTML = `
-            <div class="lightbox-content glass-panel">
-                <button class="lightbox-close">&times;</button>
-                <img class="lightbox-img" src="" alt="">
-                <h3 class="lightbox-title"></h3>
-                <p class="lightbox-desc"></p>
-            </div>
-        `;
-        document.body.appendChild(lightbox);
-
-        lightbox.querySelector('.lightbox-close').addEventListener('click', () => {
-            lightbox.classList.remove('active');
-        });
-        lightbox.addEventListener('click', (e) => {
-            if (e.target === lightbox) lightbox.classList.remove('active');
-        });
-    }
-
-    lightbox.querySelector('.lightbox-img').src = src;
-    lightbox.querySelector('.lightbox-title').textContent = title;
-    lightbox.querySelector('.lightbox-desc').textContent = desc;
-    lightbox.classList.add('active');
-}
-
-/**
  * Quản lý nút phát / dừng âm nhạc
  */
 function initMusicToggle(audioController) {
     const musicBtn = document.getElementById('music-toggle-btn');
     if (!musicBtn) return;
+    musicBtn.setAttribute('aria-pressed', 'false');
 
     musicBtn.addEventListener('click', () => {
         if (audioController.isPlaying) {
@@ -401,40 +301,14 @@ function initMusicToggle(audioController) {
 
     // Khi nhạc bắt đầu phát
     audioController.onPlayStateChange = (isPlaying) => {
+        document.getElementById('music-label').textContent = isPlaying ? 'Tắt nhạc' : 'Bật nhạc';
+        musicBtn.setAttribute('aria-pressed', String(isPlaying));
         if (isPlaying) {
             musicBtn.classList.add('playing');
         } else {
             musicBtn.classList.remove('playing');
         }
     };
-}
-
-/**
- * Hiệu ứng nghiêng 3D (3D Parallax Tilt) khi hover qua các khung kính
- */
-function init3DTilt() {
-    if (window.innerWidth < 768) return; // Bỏ qua trên mobile để tối ưu pin
-
-    const cards = document.querySelectorAll('.tilt-card');
-    cards.forEach(card => {
-        card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            
-            const rotateX = ((y - centerY) / centerY) * -7;
-            const rotateY = ((x - centerX) / centerX) * 7;
-            
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-        });
-
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
-        });
-    });
 }
 
 /**

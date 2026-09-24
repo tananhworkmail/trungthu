@@ -9,10 +9,12 @@ const CONFIG = {
     recipientFullName: "Trần Thị Mỹ Duyên",      // Tên đầy đủ
     senderName: "Tấn Anh",                       // Tên của bạn
     anniversaryDate: "2026-08-22",               // Ngày chính thức quen nhau: 22/08/2026
+    anniversaryTime: "18:45",                   // Giờ chính thức quen nhau
+    anniversaryUtcOffset: "+07:00",             // Giờ Việt Nam, không phụ thuộc múi giờ người xem
     
     // 2. LỜI CHÀO BAN ĐẦU KHI MỞ TRANG WEB TRÊN ĐIỆN THOẠI
-    welcomeTitle: "Món Quà Trung Thu Gửi Mĩ Diên 🌕💛",
-    welcomeSubtitle: "Chạm nhẹ vào chiếc đèn lồng vàng để thắp sáng đêm rằm dành riêng cho em bé nhé...",
+    welcomeTitle: "Giữa ngàn vì sao, anh tìm thấy em.",
+    welcomeSubtitle: "Một câu chuyện nhỏ, viết bằng ánh sao. Dành riêng cho Mĩ Diên.",
     lanternPrompt: "Chạm để thắp sáng đêm trăng ✨",
 
     // 3. THÔNG ĐIỆP CHÍNH DƯỚI VẦNG TRĂNG
@@ -26,7 +28,7 @@ const CONFIG = {
     letterContent: [
         "Mĩ Diên ơi! Chúc em bé có một mùa Tết Trung Thu thật nhiều niềm vui, ấm áp và ngập tràn hạnh phúc nhé! 🐰✨",
         "Anh biết Diên rất thích màu vàng — màu của ánh trăng rằm dịu dàng, màu của nắng sớm ban mai và cũng là màu của sự lạc quan, rạng rỡ. Nhưng em biết không, trong mắt anh, nụ cười đáng yêu của Diên còn tỏa sáng hơn cả vầng trăng rằm tháng Tám.",
-        "Kể từ ngày 22/8/2026 định mệnh ấy, cuộc sống của anh có thêm biết bao nhiêu tiếng cười và điều ngọt ngào. Mỗi ngày trôi qua được trò chuyện, được lắng nghe và nhìn thấy sự dễ thương của em là niềm hạnh phúc lớn nhất của Tấn Anh.",
+        "Kể từ 18 giờ 45 phút ngày 22/8/2026 định mệnh ấy, cuộc sống của anh có thêm biết bao nhiêu tiếng cười và điều ngọt ngào. Mỗi ngày trôi qua được trò chuyện, được lắng nghe và nhìn thấy sự dễ thương của em là niềm hạnh phúc lớn nhất của Tấn Anh.",
         "Trung Thu năm nay là mùa trăng đầu tiên chúng mình đồng hành cùng nhau. Anh muốn gửi trọn vào bầu trời ngàn vì sao này tất cả sự cưng chiều và yêu thương nhất dành cho em.",
         "Chúc cho cô gái nhỏ Trần Thị Mỹ Duyên của anh luôn mỉm cười rạng rỡ, ăn ngon ngủ ngoan, không phải âu lo muộn phiền điều gì. Dù thế giới ngoài kia có ra sao, anh vẫn sẽ luôn ở đây để bảo vệ, chở che và thương em thật nhiều.",
         "Thỏ ngọc có cung trăng, còn Mĩ Diên thì có trọn vẹn trái tim của Tấn Anh rồi nhé! 🌕💛",
@@ -41,24 +43,24 @@ const CONFIG = {
             desc: "Nụ cười rạng rỡ và đôi mắt đeo kính siêu đáng yêu của Mĩ Diên chính là ánh mặt trời màu vàng ấm áp nhất trong lòng Tấn Anh 💛"
         },
         {
-            image: "images/tananh-midyen-moon.jpg",
+            image: "images/chibi-trung-thu-ngam-trang.png",
             title: "Tấn Anh & Mĩ Diên Ngắm Trăng Rằm",
-            desc: "Hai đứa mình cùng mặc đồ ngủ đôi, ôm chiếc đèn ông sao vàng lấp lánh và cùng nhau ước nguyện dưới vầng trăng tròn."
+            desc: "Em tựa nhẹ vào vai anh, mình cùng ngồi bên hồ dưới ánh trăng rằm. Chỉ cần có Mĩ Diên bên cạnh, mùa trăng nào cũng thật ấm áp."
         },
         {
-            image: "images/chibi-couple-2.png",
-            title: "Nụ Hôn Ngọt Ngào Dưới Trăng",
-            desc: "Tấn Anh thơm má Mĩ Diên cưng xỉu! Chúc cô bé của anh luôn được cưng chiều và hạnh phúc nhất trần đời."
+            image: "images/chibi-trung-thu-banh-trang.png",
+            title: "Chia Em Nửa Bánh, Gửi Em Cả Trái Tim",
+            desc: "Một miếng bánh Trung Thu, một tách trà thơm và nụ cười của em. Bữa tiệc đêm rằm của hai đứa mình chỉ cần ngọt ngào như thế thôi."
         },
         {
-            image: "images/chibi-couple-3.png",
-            title: "Cái Ôm Ấm Áp Của Chúng Mình",
-            desc: "Mĩ Diên ôm chặt cổ Tấn Anh cười tít mắt. Vòng tay của anh sẽ luôn là nơi bình yên và an toàn nhất cho em."
+            image: "images/chibi-trung-thu-uoc-nguyen.png",
+            title: "Gửi Điều Ước Lên Bầu Trời",
+            desc: "Cùng nâng chiếc đèn nhỏ, gửi một điều ước lên trời sao: mong Mĩ Diên luôn bình an, và những mùa Trung Thu sau vẫn có chúng mình bên nhau."
         },
         {
-            image: "images/chibi-couple-1.png",
-            title: "Xoa Đầu Em Bé Ngoan",
-            desc: "Xoa đầu bé cưng Mĩ Diên ngoan ngoãn. Anh hứa sẽ luôn lắng nghe và thương em thật nhiều mỗi ngày!"
+            image: "images/chibi-trung-thu-ruoc-den.png",
+            title: "Nắm Tay Em Đi Rước Đèn",
+            desc: "Mĩ Diên diện áo dài vàng, cầm chiếc đèn ông sao sáng lấp lánh. Tấn Anh nắm tay em đi qua phố đèn lồng, cùng đón mùa trăng đầu tiên của hai đứa."
         },
         {
             image: "images/cute-bunny.jpg",

@@ -69,7 +69,10 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at center, #13193a 0%, #050714 85%);
+    background:
+        radial-gradient(circle at 50% 42%, rgba(71, 56, 145, 0.24), transparent 25%),
+        radial-gradient(circle at 20% 10%, rgba(255, 184, 48, 0.08), transparent 24%),
+        linear-gradient(145deg, #030510 0%, #090c25 52%, #180d2c 100%);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -83,15 +86,15 @@ body {
 
 .opening-card {
     text-align: center;
-    padding: 2.5rem 2rem;
-    max-width: 480px;
-    width: 90%;
-    border-radius: 28px;
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    box-shadow: var(--glass-shadow), 0 0 50px rgba(255, 184, 48, 0.2);
+    padding: 2.2rem 1.5rem 1.8rem;
+    max-width: 760px;
+    width: min(92%, 760px);
+    border-radius: 30px;
+    background: rgba(7, 9, 29, 0.58);
+    border: 1px solid rgba(255, 223, 120, 0.2);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 20px 70px rgba(0, 0, 0, 0.5), 0 0 80px rgba(105, 73, 255, 0.12);
     position: relative;
     overflow: hidden;
 }
@@ -111,6 +114,142 @@ body {
     );
     animation: shimmerGlow 6s infinite linear;
     pointer-events: none;
+}
+
+.constellation-card::before {
+    opacity: 0.45;
+}
+
+.constellation-intro {
+    position: relative;
+    z-index: 2;
+}
+
+.eyebrow {
+    color: rgba(255, 233, 149, 0.78);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+}
+
+.galaxy-dust {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: #fff9d2;
+    border-radius: 50%;
+    box-shadow: 14vw 8vh #fff, 26vw 72vh #ffe58d, 42vw 18vh #fff, 61vw 78vh #fff, 78vw 28vh #ffe58d, 92vw 64vh #fff, 8vw 42vh #fff, 68vw 9vh #fff;
+    opacity: 0.8;
+}
+
+.galaxy-dust-one { top: 5%; left: 4%; animation: starDrift 9s ease-in-out infinite; }
+.galaxy-dust-two { top: 30%; left: 15%; transform: scale(0.7); animation: starDrift 12s ease-in-out infinite reverse; }
+
+.constellation-stage {
+    position: relative;
+    width: min(76vw, 520px);
+    aspect-ratio: 1.34;
+    margin: 1rem auto 0.8rem;
+    z-index: 2;
+}
+
+.constellation-halo {
+    position: absolute;
+    inset: 14%;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(123, 102, 255, 0.16), transparent 68%);
+    filter: blur(12px);
+}
+
+.constellation-lines {
+    position: absolute;
+    inset: 0;
+    overflow: visible;
+}
+
+.constellation-lines line {
+    stroke: #ffe58d;
+    stroke-width: 0.34;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 3px rgba(255, 220, 112, 0.9));
+    animation: constellationLineIn 0.45s ease-out both;
+}
+
+.constellation-heart {
+    position: absolute;
+    left: 50%;
+    top: 45%;
+    transform: translate(-50%, -50%) scale(0.5);
+    color: rgba(255, 117, 140, 0);
+    font-size: clamp(3rem, 10vw, 5.5rem);
+    text-shadow: 0 0 30px #ff758c;
+    transition: color 1.1s ease, transform 1.1s cubic-bezier(0.2, 1.4, 0.4, 1);
+}
+
+.constellation-stage.completed .constellation-heart {
+    color: rgba(255, 117, 140, 0.86);
+    transform: translate(-50%, -50%) scale(1);
+    animation: heartPulse 1.8s ease-in-out infinite;
+}
+
+.constellation-star {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    color: transparent;
+    background: #fff8c7;
+    box-shadow: 0 0 5px 2px #fff, 0 0 16px 5px rgba(255, 215, 91, 0.72);
+    cursor: pointer;
+    z-index: 3;
+    transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+}
+
+.constellation-star::before {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border: 1px solid rgba(255, 231, 141, 0.25);
+    border-radius: 50%;
+    animation: starPulse 2.4s ease-in-out infinite;
+}
+
+.constellation-star:hover { transform: translate(-50%, -50%) scale(1.35); }
+.constellation-star.active { background: #ff758c; box-shadow: 0 0 8px 3px #fff, 0 0 22px 7px rgba(255, 117, 140, 0.85); }
+.constellation-star.wrong { animation: starWrong 0.35s ease-in-out; background: #ff8d8d; }
+
+.constellation-status {
+    min-height: 1.6em;
+    color: rgba(248, 250, 252, 0.75);
+    font-size: 0.92rem;
+    position: relative;
+    z-index: 2;
+}
+
+.constellation-status.complete { color: var(--gold-bright); }
+
+.constellation-progress {
+    position: relative;
+    z-index: 2;
+    width: min(260px, 65%);
+    height: 3px;
+    margin: 0.65rem auto 1.2rem;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.constellation-progress span {
+    display: block;
+    width: 0;
+    height: 100%;
+    background: linear-gradient(90deg, #ff758c, var(--gold-bright));
+    transition: width 0.35s ease;
 }
 
 .lantern-holder {
@@ -173,6 +312,17 @@ body {
 
 .start-btn:active {
     transform: scale(0.98);
+}
+
+.start-btn.is-locked {
+    opacity: 0.42;
+    filter: grayscale(0.5);
+    cursor: not-allowed;
+    animation: none;
+}
+
+.start-btn.is-unlocked {
+    animation: pulseLight 2s infinite, buttonReveal 0.7s ease-out both;
 }
 
 /* ========================================================
@@ -631,6 +781,11 @@ body {
     overflow: hidden;
 }
 
+.memory-card-illustration .memory-img-wrapper {
+    height: auto;
+    aspect-ratio: 1;
+}
+
 .memory-img-wrapper img {
     width: 100%;
     height: 100%;
@@ -978,6 +1133,46 @@ body {
    RESPONSIVE DESIGN (TỐI ƯU ĐẶC BIỆT CHO ĐIỆN THOẠI DI ĐỘNG)
    ======================================================== */
 @media (max-width: 768px) {
+    .opening-card {
+        padding: 1.6rem 0.85rem 1.4rem;
+        border-radius: 24px;
+    }
+
+    .eyebrow {
+        font-size: 0.58rem;
+        letter-spacing: 0.16em;
+    }
+
+    .welcome-title {
+        font-size: 1.6rem;
+        margin-top: 0.35rem;
+    }
+
+    .welcome-subtitle {
+        font-size: 0.9rem;
+        margin: 0.4rem auto 0;
+        max-width: 300px;
+    }
+
+    .constellation-stage {
+        width: min(88vw, 430px);
+        margin-top: 0.55rem;
+    }
+
+    .constellation-star {
+        width: 22px;
+        height: 22px;
+    }
+
+    .constellation-status {
+        font-size: 0.82rem;
+    }
+
+    .start-btn {
+        font-size: 0.98rem;
+        padding: 0.85rem 1.3rem;
+    }
+
     .container {
         padding: 1.5rem 1rem 5.5rem;
     }
