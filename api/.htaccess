@@ -1,0 +1,3 @@
+<FilesMatch "^(db_config|db_credentials|db_credentials\.example|bootstrap)\.php$|^wishes\.json$">
+    Require all denied
+</FilesMatch>

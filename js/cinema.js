@@ -15,6 +15,9 @@ class MoonlightCinema {
         this.frame = null;
         this.pointer = { x: 0, y: 0 };
         this.pan = { x: 0, y: 0 };
+        this.gyro = { x: 0, y: 0 };
+        this.gyroTarget = { x: 0, y: 0 };
+        this.touchActive = false;
         this.pauseButton = document.getElementById('film-pause');
         this.dots = [...document.querySelectorAll('.film-chapter')];
         this.canvas = document.getElementById('film-dust');
@@ -27,22 +30,31 @@ class MoonlightCinema {
         this.resize();
         this.initCelestialButtons();
         this.initTouchNavigation();
+        this.initDeviceOrientation();
         window.addEventListener('resize', () => this.resize());
         this.ready = Promise.allSettled([...this.root.querySelectorAll('.scene-art img')].map(img => img.decode()));
         this.worldReady = import('./journey3d.js').then(({ MoonlightJourney }) => {
             this.journey = new MoonlightJourney(this.root, this.scenes, () => {
                 this.journey = null;
-                this.draw();
+                if (this.root.classList.contains('details-open')) this.index = 4;
+                this.root.classList.remove('details-open');
+                this.go(this.index);
             });
-            if (this.started) this.draw();
+            if (this.started) { this.journey.arrive(this.index); this.updateControls(); this.draw(); }
         }).catch(error => {
             this.root.dataset.renderer = 'fallback';
             console.warn('3D unavailable; keeping the accessible scene presentation.', error);
         });
         document.getElementById('film-previous').addEventListener('click', () => this.go(this.index - 1, true));
         document.getElementById('film-next').addEventListener('click', () => this.go(this.index + 1, true));
-        document.getElementById('film-replay').addEventListener('click', () => { this.playing = true; this.go(0, true); });
+        document.getElementById('film-replay').addEventListener('click', () => {
+            if (this.root.classList.contains('details-open')) this.hideDetails();
+            this.playing = true;
+            this.go(0, true);
+        });
         this.pauseButton.addEventListener('click', () => this.toggle());
+        document.getElementById('open-finale-btn').addEventListener('click', () => this.showDetails());
+        document.getElementById('close-finale-btn').addEventListener('click', () => this.hideDetails());
         this.dots.forEach((dot, i) => dot.addEventListener('click', () => this.go(i, true)));
         this.root.addEventListener('pointermove', event => {
             if (event.pointerType !== 'mouse') return;
@@ -71,11 +83,15 @@ class MoonlightCinema {
             this.frame = null;
             const dt = this.lastTime ? Math.min(time - this.lastTime, 100) : 0;
             this.lastTime = time;
-            if (this.playing && !this.journey?.hop) {
+            if (!this.journey?.spatial && this.playing && !this.journey?.hop && !this.touchActive) {
                 this.elapsed += dt;
                 if (this.elapsed >= this.duration && this.index < this.scenes.length - 1) this.go(this.index + 1);
             }
-            this.draw(this.playing || this.index === 4 || this.journey?.hop ? dt : 0);
+            if (!this.touchActive) {
+                this.pointer.x *= 0.94;
+                this.pointer.y *= 0.94;
+            }
+            this.draw(this.playing || this.journey?.hop ? dt : 0, dt);
             this.requestFrame();
         };
     }
@@ -92,11 +108,14 @@ class MoonlightCinema {
     }
 
     go(index, userInitiated = false) {
+        if (userInitiated) index = (index + this.scenes.length) % this.scenes.length;
         if (index < 0 || index >= this.scenes.length) return;
         const focusedScene = document.activeElement.closest('.film-scene');
         this.index = index;
         this.elapsed = 0;
+        if (userInitiated && this.root.classList.contains('details-open')) this.hideDetails();
         if (userInitiated && this.journey) this.journey.travelTo(index);
+        else this.journey?.arrive(index);
         this.scenes.forEach((scene, i) => {
             const wasActive = scene.classList.contains('is-active');
             scene.classList.toggle('is-leaving', wasActive && i !== index);
@@ -105,10 +124,10 @@ class MoonlightCinema {
             scene.setAttribute('aria-hidden', String(i !== index));
         });
         const final = index === this.scenes.length - 1;
-        if (final) this.playing = false;
+        if (final && !this.journey?.spatial) this.playing = false;
         this.root.classList.toggle('at-finale', final);
-        document.getElementById('film-previous').disabled = index === 0;
-        document.getElementById('film-next').disabled = final;
+        document.getElementById('film-previous').disabled = false;
+        document.getElementById('film-next').disabled = false;
         this.dots.forEach((dot, i) => {
             dot.setAttribute('aria-current', i === index ? 'step' : 'false');
             dot.style.setProperty('--fill', i < index || final ? '100%' : '0%');
@@ -122,7 +141,7 @@ class MoonlightCinema {
     }
 
     toggle() {
-        if (this.index === this.scenes.length - 1) { this.playing = true; this.go(0, true); }
+        if (this.index === this.scenes.length - 1 && !this.journey?.spatial) { this.playing = true; this.go(0, true); }
         else this.playing = !this.playing;
         this.lastTime = 0;
         this.updateControls();
@@ -131,11 +150,36 @@ class MoonlightCinema {
     }
 
     updateControls() {
-        this.pauseButton.textContent = this.playing ? 'Ⅱ' : '▷';
-        const label = this.index === this.scenes.length - 1 ? 'Xem lại từ đầu' : this.playing ? 'Tạm dừng' : 'Tiếp tục';
+        this.pauseButton.textContent = this.journey?.spatial ? (this.playing ? 'Ⅱ Dừng ngắm' : '↻ Xoay tiếp') : this.playing ? 'Ⅱ' : '▷';
+        const label = this.journey?.spatial ? (this.playing ? 'Dừng ngắm không gian' : 'Tiếp tục xoay quanh ngân hà') : this.index === this.scenes.length - 1 ? 'Xem lại từ đầu' : this.playing ? 'Tạm dừng' : 'Tiếp tục';
         this.pauseButton.setAttribute('aria-label', label);
         this.pauseButton.title = label;
         this.root.classList.toggle('is-paused', !this.playing);
+    }
+
+    showDetails() {
+        if (!this.journey?.spatial) { this.go(4, true); return; }
+        this.resumeAfterDetails = this.playing;
+        this.playing = false;
+        this.journey.baseAngle = this.journey.angle;
+        this.journey.hop = null;
+        this.journey.releaseDrag();
+        this.root.classList.add('details-open');
+        this.scenes[4].inert = false;
+        this.scenes[4].setAttribute('aria-hidden', 'false');
+        this.updateControls();
+        document.getElementById('open-letter-btn').focus({ preventScroll: true });
+    }
+
+    hideDetails() {
+        this.root.classList.remove('details-open');
+        this.scenes[4].inert = true;
+        this.scenes[4].setAttribute('aria-hidden', 'true');
+        this.playing = this.resumeAfterDetails ?? true;
+        this.lastTime = 0;
+        this.updateControls();
+        document.getElementById('open-finale-btn').focus({ preventScroll: true });
+        this.requestFrame();
     }
 
     resize() {
@@ -148,22 +192,29 @@ class MoonlightCinema {
         if (this.index >= 0) this.draw();
     }
 
-    draw(dt = 0) {
+    draw(dt = 0, ambientDt = dt) {
         if (this.index < 0) return;
         // The cached sky updates at 30 fps on phones; the 3D camera keeps its own cadence.
-        this.skyElapsed += dt;
-        if (!this.mobile || !this.journey || !dt || this.skyElapsed >= 33) {
+        this.skyElapsed += ambientDt;
+        if (!this.mobile || !this.journey || !ambientDt || this.skyElapsed >= 33) {
             this.universe.render(this.skyElapsed / 1000, this.pan, this.motion.matches);
             this.skyElapsed = 0;
         }
         const progress = Math.min(1, this.elapsed / this.duration);
-        if (this.playing) {
-            this.pan.x += (this.pointer.x - this.pan.x) * .035;
-            this.pan.y += (this.pointer.y - this.pan.y) * .035;
-        }
+        this.gyro.x += (this.gyroTarget.x - this.gyro.x) * 0.08;
+        this.gyro.y += (this.gyroTarget.y - this.gyro.y) * 0.08;
+        const targetPanX = this.pointer.x + this.gyro.x * 0.75;
+        const targetPanY = this.pointer.y + this.gyro.y * 0.75;
+        this.pan.x += (targetPanX - this.pan.x) * 0.08;
+        this.pan.y += (targetPanY - this.pan.y) * 0.08;
         if (this.journey) {
             // All places use the same camera; progress moves that camera through space.
-            this.journey.render(this.index, progress, this.pan, dt, this.motion.matches);
+            this.journey.render(this.index, progress, this.pan, dt, this.motion.matches, ambientDt);
+            if (this.journey.spatial) {
+                this.index = ((Math.round(this.journey.angle / (Math.PI * 2 / 5)) % 5) + 5) % 5;
+                this.scenes.slice(0, 4).forEach((scene, i) => scene.setAttribute('aria-hidden', String(i !== this.index)));
+                return;
+            }
             this.dots[this.index].style.setProperty('--fill', `${this.index === 4 ? 100 : progress * 100}%`);
             return;
         }
@@ -193,35 +244,68 @@ class MoonlightCinema {
     }
 
     requestFrame() {
-        const ambientFinale = this.index === 4 && !this.motion.matches;
-        if (this.started && (this.playing || ambientFinale || this.journey?.hop) && !document.hidden && !this.obscured && !this.typing && this.frame === null) this.frame = requestAnimationFrame(this.tick);
+        if (this.started && !document.hidden && !this.obscured && !this.typing && this.frame === null) {
+            this.frame = requestAnimationFrame(this.tick);
+        }
     }
 
     initTouchNavigation() {
         let gesture = null;
-        const reset = () => { gesture = null; this.pointer = { x: 0, y: 0 }; };
+        const reset = () => {
+            const id = gesture?.id;
+            gesture = null;
+            this.touchActive = false;
+            if (id !== undefined && this.root.hasPointerCapture(id)) this.root.releasePointerCapture(id);
+        };
         this.root.addEventListener('pointerdown', event => {
-            if (event.pointerType !== 'touch' || !event.isPrimary || !this.started || this.index === 4 ||
-                event.target.closest('button, input, textarea, a, nav')) return;
-            gesture = { id: event.pointerId, x: event.clientX, y: event.clientY };
+            if (event.pointerType !== 'touch' || !event.isPrimary || !this.started || this.root.classList.contains('details-open') ||
+                event.target.closest('button, input, textarea, a, nav, .letter-modal, .finale-copy')) return;
+            gesture = { id: event.pointerId, x: event.clientX, y: event.clientY, startTime: performance.now() };
+            this.root.setPointerCapture(event.pointerId);
+            this.touchActive = true;
+            this.elapsed = 0;
+            this.journey?.beginDrag();
         }, { passive: true });
         this.root.addEventListener('pointermove', event => {
             if (!gesture || event.pointerId !== gesture.id) return;
+            const dx = event.clientX - gesture.x;
+            const dy = event.clientY - gesture.y;
+            this.journey?.setDrag(dx / this.root.clientWidth, dy / this.root.clientHeight);
             this.pointer = {
-                x: Math.max(-.5, Math.min(.5, (event.clientX - gesture.x) / 180)),
-                y: Math.max(-.3, Math.min(.3, (event.clientY - gesture.y) / 220))
+                x: Math.max(-0.9, Math.min(0.9, dx / 150)),
+                y: Math.max(-0.7, Math.min(0.7, dy / 180))
             };
         }, { passive: true });
         this.root.addEventListener('pointerup', event => {
             if (!gesture || event.pointerId !== gesture.id) return;
-            const dx = event.clientX - gesture.x, dy = event.clientY - gesture.y;
-            if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy) * 1.35) {
+            const dx = event.clientX - gesture.x;
+            const dy = event.clientY - gesture.y;
+            const dt = performance.now() - gesture.startTime;
+            if (this.journey?.spatial) {
+                // Commit the final finger position even if release happens between frames.
+                this.journey.setDrag(dx / this.root.clientWidth, dy / this.root.clientHeight);
+                this.draw();
+                this.journey.releaseDrag(dx / Math.max(100, dt), dy / Math.max(100, dt));
+                this.root.classList.add('has-swiped');
+                reset();
+                return;
+            }
+            const isFlick = dt < 320 && Math.abs(dx) > 38;
+            const isSwipe = Math.abs(dx) > 60;
+            if ((isFlick || isSwipe) && Math.abs(dx) > Math.abs(dy) * 1.15) {
                 this.go(this.index + (dx < 0 ? 1 : -1), true);
                 this.root.classList.add('has-swiped');
-            }
+            } else this.go(this.index, true);
             reset();
         }, { passive: true });
-        this.root.addEventListener('pointercancel', reset, { passive: true });
+        const cancelGesture = event => {
+            if (!gesture || event.pointerId !== gesture.id) return;
+            if (gesture && this.journey?.spatial) this.journey.releaseDrag();
+            else if (gesture) this.go(this.index, true);
+            reset();
+        };
+        this.root.addEventListener('pointercancel', cancelGesture, { passive: true });
+        this.root.addEventListener('lostpointercapture', cancelGesture, { passive: true });
         const viewport = window.visualViewport;
         const fitKeyboard = () => {
             if (this.keyboardBlurTimer) return;
@@ -251,6 +335,41 @@ class MoonlightCinema {
             }, 250);
             this.requestFrame();
         });
+    }
+
+    initDeviceOrientation() {
+        let calibrated = false;
+        let baseBeta = 50;
+        const onOrientation = (e) => {
+            if (e.gamma === null || e.beta === null) return;
+            if (!calibrated && Math.abs(e.beta) > 10) {
+                baseBeta = Math.max(25, Math.min(75, e.beta));
+                calibrated = true;
+            }
+            const gamma = Math.max(-40, Math.min(40, e.gamma));
+            const betaDiff = Math.max(-35, Math.min(35, e.beta - baseBeta));
+            this.gyroTarget = {
+                x: gamma / 28,
+                y: betaDiff / 24
+            };
+        };
+
+        this.requestGyroPermission = async () => {
+            if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+                try {
+                    const res = await DeviceOrientationEvent.requestPermission();
+                    if (res === 'granted') {
+                        window.addEventListener('deviceorientation', onOrientation, { passive: true });
+                    }
+                } catch (e) { /* ignore */ }
+            } else if (window.DeviceOrientationEvent) {
+                window.addEventListener('deviceorientation', onOrientation, { passive: true });
+            }
+        };
+
+        if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission !== 'function') {
+            window.addEventListener('deviceorientation', onOrientation, { passive: true });
+        }
     }
 
     initCelestialButtons() {

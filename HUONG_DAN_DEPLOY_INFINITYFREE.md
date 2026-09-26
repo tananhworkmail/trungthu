@@ -1,6 +1,6 @@
 # 🌕 HƯỚNG DẪN DEPLOY TRANG WEB TRUNG THU LÊN INFINITYFREE (CHI TIẾT TỪ A - Z)
 
-Trang web này được tối ưu 100% để chạy mượt mà ngay lập tức trên nền tảng hosting miễn phí **InfinityFree** (hoặc bất kỳ hosting PHP/HTML nào).
+Trang chính hiện là **`index.php`**, chạy trên hosting có PHP 7.4+ và MySQLi như **InfinityFree**. Khi bấm **Thả đèn**, điều ước được lưu vào MySQL trước khi đèn bay lên. Thông tin kết nối đã được điền trong file PHP riêng phía máy chủ.
 
 ---
 
@@ -30,6 +30,7 @@ Trước khi upload lên hosting, bạn hãy mở file **`js/config.js`** để 
 5. **Nhạc nền**:
    - Bạn có thể đặt bài hát bạn gái thích (định dạng file `.mp3`) vào thư mục `audio/` và đặt tên là `bgm.mp3`.
    - *Lưu ý: Nếu chưa có file mp3, trang web sẽ tự động tấu giai điệu Music Box piano "Ánh Trăng Nói Hộ Lòng Tôi" du dương cực kỳ lãng mạn.*
+   - Không có nút bật/tắt nhạc. Trang thử phát ngay khi mở; nếu trình duyệt chặn tự phát có tiếng, lần chạm đầu tiên vào bất kỳ chỗ nào trên trang sẽ khởi động nhạc. Nhạc tiếp tục khi ngắm không gian và đọc thư. Đây là giới hạn của [chính sách tự phát Chrome](https://developer.chrome.com/blog/autoplay/).
 
 ---
 
@@ -52,20 +53,20 @@ Trước khi upload lên hosting, bạn hãy mở file **`js/config.js`** để 
 2. Tìm và bấm mở thư mục **`htdocs`** (đây là thư mục chứa web chính).
 3. Nếu bên trong `htdocs` có sẵn file mặc định của hosting (như `index2.html` hay `DO NOT UPLOAD FILES HERE`), bạn hãy xóa chúng đi.
 4. Tải toàn bộ các file và thư mục của dự án lên:
-   - File `index.html`
-   - Toàn bộ thư mục `css/`, gồm cả các file hiệu ứng `cinema.css`, `galaxy.css`, `enchantment.css`, `journey3d.css`.
+   - File `index.php` và `.htaccess` ở thư mục gốc. `index.html` hiện chỉ chuyển người mở đường dẫn cũ sang `index.php`; hãy thay cả file cũ này trên hosting.
+   - Toàn bộ thư mục `css/`, gồm cả các file hiệu ứng `cinema.css`, `galaxy.css`, `enchantment.css`, `journey3d.css`, `moonlit-details.css`.
    - Toàn bộ thư mục `js/`, **bao gồm `js/vendor/three/`**. Hành trình 3D dùng thư viện đã lưu sẵn trong dự án; không cần npm hay bước build trên hosting.
    - Thư mục `images/` (các hình ảnh)
    - Thư mục `audio/` (file nhạc nếu có)
-   - Thư mục `api/` (xử lý điều ước)
+   - Toàn bộ thư mục `api/`, gồm `wish.php`, `bootstrap.php`, `db_config.php`, **`db_credentials.php`** và `.htaccess`. File `db_credentials.php` chứa cấu hình thật, đã được loại khỏi Git; nếu lấy mã bằng Git, phải tải riêng file này lên hosting. Không đăng nội dung file hoặc file ZIP chứa mật khẩu lên nơi công khai.
 
 *(Mẹo: Bạn có thể nén toàn bộ các file thành 1 file `.zip`, upload lên rồi bấm chuột phải chọn **Extract** vào `htdocs`)*.
 
-Để xem bản 3D ở máy tính, chạy `python -m http.server 8765` trong thư mục dự án rồi mở `http://localhost:8765`. Không mở trực tiếp `index.html` bằng `file://`, vì trình duyệt có thể chặn ES modules. Trình duyệt không hỗ trợ WebGL sẽ dùng hiệu ứng dự phòng và vẫn đọc thư, gửi điều ước được.
+Để xem tại máy tính đã cài PHP và bật MySQLi, chạy `php -S 127.0.0.1:8765` trong thư mục dự án rồi mở `http://127.0.0.1:8765/index.php`. Không dùng Live Server, `python -m http.server` hoặc mở bằng `file://`: các cách này không xử lý PHP. [InfinityFree không cho kết nối MySQL từ ngoài hosting](https://forum.infinityfree.com/t/connecting-to-mysql-from-an-external-application/49339), nên việc lưu vào database của bạn phải kiểm tra trên website đã upload. Trang tại máy vẫn xem được hiệu ứng; nếu lưu thất bại, nội dung điều ước được giữ lại và không báo thành công.
 
-Bản giao diện ưu tiên điện thoại cầm dọc. Cảnh tự chạy; vuốt trái/phải để đi tiếp/quay lại, hoặc dùng các nút phía dưới. Camera tự căn theo chiều rộng màn hình, không cần chuột hay quyền cảm biến. Hiệu ứng giảm độ phân giải khi tốc độ dựng hình thấp; tạm dừng phía sau lá thư và khi nhập điều ước.
+Bản giao diện ưu tiên Android Chrome, điện thoại cầm dọc. Ảnh, chữ, cổng sáng và bệ 3D cùng nằm trong một không gian, nối nhau bằng đường ánh sao khép kín. Camera tự đi vòng khoảng 45 giây mỗi vòng; vuốt ngang hoặc dọc để xoay 360° liên tục theo cả hai chiều, thả tay để trôi tiếp. Bấm **Dừng ngắm** để giữ nguyên góc nhìn; sao, tinh vân và đèn vẫn chuyển động. **Lời gửi em** mở bộ đếm ngày–giờ–phút–giây, lá thư và nút **Thả đèn**; **Trở về ngân hà** quay lại không gian. **Thêm một lần nữa** đưa góc nhìn về tư thế thẳng. Không cần chuột hay cảm biến để sử dụng. Chế độ giảm chuyển động của điện thoại tắt các hiệu ứng tự chạy nhưng vẫn cho phép vuốt xoay thủ công.
 
-Để xem trên điện thoại trước khi upload, nối điện thoại và máy tính cùng Wi-Fi, chạy `python -m http.server 8765 --bind 0.0.0.0`, rồi mở `http://<IPv4-của-máy-tính>:8765` trên điện thoại (xem IPv4 bằng `ipconfig`). Địa chỉ `localhost` trên điện thoại không trỏ đến máy tính. Sau khi upload, gửi đường dẫn HTTPS của website để xem trên điện thoại.
+Để xem giao diện trên điện thoại trước khi upload, nối điện thoại và máy tính cùng Wi-Fi, chạy `php -S 0.0.0.0:8765`, rồi mở `http://<IPv4-của-máy-tính>:8765/index.php` trên điện thoại (xem IPv4 bằng `ipconfig`). Sau khi upload, mở đường dẫn HTTPS của website để kiểm tra thả đèn.
 
 ---
 
@@ -80,27 +81,17 @@ Bản giao diện ưu tiên điện thoại cầm dọc. Cảnh tự chạy; vu�
 
 ---
 
-## BƯỚC 4: (TÙY CHỌN) KẾT NỐI DATABASE MYSQL TRÊN INFINITYFREE
+## BƯỚC 4: KIỂM TRA DATABASE VÀ XEM ĐIỀU ƯỚC
 
-> **Ghi chú**: Tính năng Thả Thiên Đăng Ước Nguyện mặc định **đã tự động lưu** vào file `api/wishes.json` hoặc lưu trên trình duyệt của bạn gái mà không bắt buộc phải tạo database.  
-> Tuy nhiên, nếu bạn muốn dùng cơ sở dữ liệu MySQL chuyên nghiệp trên InfinityFree:
+Cấu hình đã được điền trong `api/db_credentials.php`, sử dụng database **`if0_40553548_tananh`**. Không cần điền mật khẩu vào JavaScript hoặc HTML. File `api/db_credentials.example.php` chỉ là mẫu cho một bản cài đặt mới.
 
-1. Vào **Control Panel (cPanel)** của InfinityFree -> Chọn **MySQL Databases**.
-2. Nhập tên database mới (ví dụ: `trungthu`) và bấm **Create Database**.
-3. Xem các thông số MySQL được cấp:
-   - **MySQL Hostname**: (ví dụ: `sql123.infinityfree.com`)
-   - **MySQL Username**: (ví dụ: `epiz_12345678`)
-   - **MySQL Password**: Mật khẩu tài khoản của bạn
-   - **MySQL Database Name**: (ví dụ: `epiz_12345678_trungthu`)
-4. Mở file **`api/db_config.php`** trên File Manager và cập nhật:
-   ```php
-   define('USE_MYSQL', true);
-   define('DB_HOST', 'sql123.infinityfree.com');
-   define('DB_USER', 'epiz_12345678');
-   define('DB_PASS', 'mat_khau_cua_ban');
-   define('DB_NAME', 'epiz_12345678_trungthu');
-   ```
-5. Bấm Lưu lại. Hệ thống sẽ tự động tạo bảng `wishes` và lưu mọi điều ước của bạn gái vào MySQL!
+1. Upload các file ở bước 3 vào `htdocs`, rồi mở website qua HTTPS.
+2. Mở **Lời gửi em**, nhập một điều ước và bấm **Thả đèn**. Nút hiện **Đang thả…** trong lúc lưu và tạm khóa để tránh bấm liên tục.
+3. API tự tạo bảng **`wishes`** nếu chưa có; các cột gồm `id`, `author`, `wish`, `created_at`. Thời gian lưu theo Việt Nam, nội dung hỗ trợ tiếng Việt và emoji (`utf8mb4`). Bảng cũ không bị xóa.
+4. Chỉ khi MySQL xác nhận lưu thành công, đèn mới bay lên và ô nhập mới được xóa. Nếu lưu thất bại, thông báo lỗi xuất hiện, nội dung vẫn giữ nguyên. Không còn cơ chế âm thầm lưu JSON rồi báo thành công.
+5. Trong InfinityFree, mở **MySQL Databases → phpMyAdmin**, chọn database **`if0_40553548_tananh`**, bảng **`wishes`**, rồi **Browse** để đọc điều ước. Có thể sắp xếp `id` giảm dần để xem điều ước mới nhất.
+
+`api/wish.php` chỉ nhận POST từ phiên trang; truy cập trực tiếp bằng GET sẽ trả 405 và không công khai danh sách điều ước. Nếu có báo phiên hết hạn, tải lại trang. Nếu không lưu được, kiểm tra đã upload `db_credentials.php`, thông tin MySQL còn đúng và MySQLi đã bật. API không trả mật khẩu hoặc lỗi SQL chi tiết ra trình duyệt.
 
 ---
 

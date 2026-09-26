@@ -4,23 +4,24 @@
 .scene-backdrop { opacity: .13; mix-blend-mode: screen; }
 .scene-art { -webkit-mask-image: linear-gradient(90deg, transparent, #000c 28%, black 55%, #000d 90%, transparent); mask-image: linear-gradient(90deg, transparent, #000c 28%, black 55%, #000d 90%, transparent); }
 .scene-camera::after { background: linear-gradient(90deg, #04071255, #04071220 35%, transparent 65%), linear-gradient(0deg, #04071270, transparent 28%, transparent 85%, #04071220); }
-.scene-copy { text-shadow: 0 2px 8px #030612, 0 0 35px #030612; }
-.scene-copy h2 { color: #fff2df; text-shadow: 0 0 28px #ead0ff33, 0 2px 12px #030612; }
-.scene-eyebrow { color: #f2d4af; text-shadow: 0 0 15px #e5bbf380; }
+.scene-copy { text-shadow: 0 1px 2px #050716; }
+.scene-copy h2 { color: #fffdf2; font-weight: 700; text-shadow: 0 2px 2px #050716; }
+.scene-copy p { color: #fffaf0; font-weight: 600; }
+.scene-eyebrow { color: #fff0ab; font-weight: 700; text-shadow: 0 1px 2px #050716; }
 .film-grain { background: radial-gradient(ellipse at center, transparent 60%, #04061760); }
 .cosmic-aurora { position: absolute; inset: -20%; pointer-events: none; opacity: .65; mix-blend-mode: screen; filter: blur(24px); }
-.aurora-one { background: conic-gradient(from 45deg at 65% 40%, transparent 0deg, #5240aa22 35deg, transparent 75deg, #4087b91c 135deg, transparent 180deg, #b85b9420 245deg, transparent 285deg); animation: auroraSail 32s ease-in-out infinite alternate; }
-.aurora-two { background: radial-gradient(ellipse at 15% 65%, #814ab01f, transparent 45%), radial-gradient(ellipse at 85% 20%, #4c9cbd26, transparent 40%); animation: auroraSail 24s -10s ease-in-out infinite alternate-reverse; }
+.aurora-one { background: conic-gradient(from 45deg at 65% 40%, transparent 0deg, #ffe37135 35deg, transparent 75deg, #b597e31c 135deg, transparent 180deg, #ffc94430 245deg, transparent 285deg); animation: auroraSail 32s ease-in-out infinite alternate; }
+.aurora-two { background: radial-gradient(ellipse at 15% 65%, #efb74530, transparent 45%), radial-gradient(ellipse at 85% 20%, #fff0a336, transparent 40%); animation: auroraSail 24s -10s ease-in-out infinite alternate-reverse; }
 .cinema.is-paused:not(.at-finale) .cosmic-aurora { animation-play-state: paused; }
 .film-finale .scene-art { opacity: .38; }
-.film-finale .scene-copy h2 { background: linear-gradient(110deg, #fff9e6 10%, #ffdea3 48%, #f0d7ff 88%); background-clip: text; -webkit-background-clip: text; color: transparent; text-shadow: 0 0 32px #ffd7b62b; }
+.film-finale .scene-copy h2 { color: #fff6cf; background: none; text-shadow: 0 2px 2px #080914; }
 .galaxy-vignette { background: radial-gradient(ellipse at 50% 48%, transparent 35%, #02040e50), linear-gradient(#03051055, transparent 25%, transparent 80%, #03051055); }
 .constellation-stage { perspective: 800px; }
 .heart-orbit { position: absolute; inset: 7% -12%; border-radius: 50%; border: 1px solid #bdcaff2b; box-shadow: 0 0 18px #a486ee18, inset 0 0 18px #a486ee12; pointer-events: none; }
 .heart-orbit::before { content: ''; position: absolute; top: 48%; left: -3px; width: 5px; height: 5px; border-radius: 50%; background: #eef6ff; box-shadow: 0 0 12px 3px #b8c8ff; }
 .orbit-one { transform: rotateX(65deg) rotateZ(-22deg); animation: orbitDream 18s linear infinite; }
 .orbit-two { inset: -5% 0; transform: rotateX(65deg) rotateZ(60deg); animation: orbitDream 24s -7s linear infinite reverse; opacity: .6; }
-.constellation-halo { background: radial-gradient(ellipse, #7759c438, #666be31a 38%, transparent 70%); filter: blur(18px); animation: heartNebula 5s ease-in-out infinite alternate; }
+.constellation-halo { background: radial-gradient(ellipse, #ffd75945, #ffe49a20 38%, transparent 70%); filter: blur(18px); animation: heartNebula 5s ease-in-out infinite alternate; }
 .opening-screen .constellation-lines line { stroke: #fff; stroke-width: .25; filter: drop-shadow(0 0 2px #e8efff); animation-duration: .32s; }
 .opening-screen .constellation-star.active::before { box-shadow: 0 0 6px 1px #fff, 0 0 18px 3px #c3c5ff88; }
 .constellation-stage.completed .constellation-lines { filter: drop-shadow(0 0 6px #bec7ff55); }
@@ -36,29 +37,37 @@
 .celestial-button::before { content: ''; position: absolute; inset: 0; background: linear-gradient(110deg, transparent 25%, #fff9 48%, transparent 72%); transform: translateX(-150%); pointer-events: none; animation: buttonGleam 5.5s 1s ease-in-out infinite; z-index: -1; }
 .celestial-button::after { content: ''; position: absolute; inset: 1px; border-radius: inherit; border: 1px solid #ffffff45; pointer-events: none; }
 .finale-actions .celestial-button { display: flex; align-items: center; justify-content: center; gap: 12px; min-height: 78px; padding: 15px 18px; border-radius: 20px; cursor: pointer; font-family: var(--font-body); text-align: left; text-shadow: none; }
-#open-letter-btn { color: #37213e; border: 1px solid #fff0c7; background: linear-gradient(125deg, #fff0c7 0%, #f7d299 42%, #ecb5d7 100%); box-shadow: 0 5px 0 #9d668580, 0 10px 32px #e5aa9160, 0 0 65px #e2b5fb25, inset 0 1px 0 #fff; animation: invitationGlow 3.5s ease-in-out infinite alternate; }
+#open-letter-btn { color: #382400; border: 1px solid #fff3af; background: linear-gradient(120deg, #fff8c8 0%, #ffe373 40%, #ffd043 75%, #ffe990 100%); box-shadow: 0 4px 0 #a77820, 0 10px 28px #ffc83e33, inset 0 1px 0 #fffef2; animation: invitationGlow 3.5s ease-in-out infinite alternate; }
 #open-letter-btn span { margin: 0; }
-.button-symbol { font-size: 1.8rem; line-height: 1; flex-shrink: 0; }
+.button-symbol { display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid #82590730; border-radius: 14px; background: #fff8cd80; font-size: 1.8rem; line-height: 1; flex-shrink: 0; box-shadow: inset 0 1px 0 #ffffff60; }
 .button-copy { display: flex; flex-direction: column; gap: 5px; }
 .button-copy strong { font-size: .85rem; font-weight: 700; line-height: 1.25; }
-.button-copy small { font-size: .55rem; font-weight: 500; opacity: .78; line-height: 1.4; }
+.button-copy small { font-size: 12px; font-weight: 600; line-height: 1.5; }
 .button-arrow { margin-left: auto !important; font-size: 1.2rem; }
-#film-replay { color: #ece6ff; border: 1px solid #b59beb88; background: linear-gradient(125deg, #5c47896b, #282e626b); box-shadow: 0 4px 0 #18163180, 0 0 25px #a79aff25, inset 0 1px 0 #dac7ff4d; backdrop-filter: blur(12px); }
+#film-replay { color: #fff3c4; border: 1px solid #dbc07499; background: linear-gradient(125deg, #37301e, #1c1b26); box-shadow: 0 4px 0 #0d0c14, inset 0 1px 0 #fff1b326; }
+#film-replay .button-symbol { color: #ffdf79; background: #ffda6914; border-color: #ffe39745; }
+#film-replay .button-copy small { color: #efe4c5; }
 #film-replay::before { opacity: .25; animation-delay: 2.5s; }
 .finale-actions .celestial-button:hover, .film-wish-line button:hover { transform: translateY(-4px); filter: brightness(1.12); }
-#open-letter-btn:hover { box-shadow: 0 7px 0 #9d66856b, 0 12px 45px #ecb5d78c, 0 0 80px #dec6ff44; }
-#film-replay:hover { box-shadow: 0 6px 0 #18163180, 0 8px 38px #b7a4ff60; }
+#open-letter-btn:hover { box-shadow: 0 7px 0 #a77820, 0 12px 40px #ffd65e55; }
+#film-replay:hover { box-shadow: 0 6px 0 #0d0c14, 0 8px 30px #ffe08530; }
 .finale-actions .celestial-button:active, .film-wish-line button:active { transform: translateY(2px) scale(.97); }
 .film-wish { max-width: 590px; margin-top: 25px; }
-.film-wish label { color: #f4e1fa; letter-spacing: .025em; margin-bottom: 12px; }
-.film-wish-line { position: relative; align-items: center; gap: 8px; padding: 6px 7px 6px 16px; border: 1px solid #b3a0df66; border-radius: 18px; background: linear-gradient(110deg, #191833a0, #47336570); backdrop-filter: blur(14px); box-shadow: inset 0 1px 0 #e8d0ff26, 0 0 25px #ba92ec13; transition: box-shadow .3s, border-color .3s; }
-.film-wish-line:focus-within { border-color: #ddc3ff; box-shadow: 0 0 25px #be9dff44, inset 0 0 16px #cab2ff0d; }
-.film-wish-line input { font-size: .78rem; outline: none; color: #fff1ff; }
-.film-wish-line input::placeholder { color: #c7bbd9; }
-.film-wish-line button { display: flex; align-items: center; justify-content: center; gap: 5px; flex-shrink: 0; padding: 0 14px; min-height: 44px; border: 1px solid #f6ddb8; border-radius: 13px; color: #3c2745; background: linear-gradient(135deg, #ffebc0, #e8b5d4); box-shadow: 0 0 18px #efc59c3d; font-size: .75rem; font-weight: 700; }
+.film-wish label { color: #fff5d2; font-weight: 600; letter-spacing: .025em; margin-bottom: 12px; }
+.film-wish-line { position: relative; align-items: center; gap: 8px; padding: 6px 7px 6px 16px; border: 1px solid #bca35c88; border-radius: 18px; background: #131421; box-shadow: inset 0 1px 0 #fff2bd1a; transition: box-shadow .3s, border-color .3s; }
+.film-wish-line:focus-within { border-color: #ffe17f; box-shadow: 0 0 0 3px #ffe17f25; }
+.film-wish-line input { font-size: 16px; font-weight: 500; outline: none; color: #fffdf3; }
+.film-wish-line input::placeholder { color: #d4cdbb; opacity: 1; }
+.film-wish-line button { display: flex; align-items: center; justify-content: center; gap: 5px; flex-shrink: 0; padding: 0 14px; min-height: 48px; border: 1px solid #fff3af; border-radius: 13px; color: #382400; background: linear-gradient(135deg, #fff3af, #ffd346); box-shadow: 0 2px 0 #967025, 0 0 18px #ffcf4926; font-size: 14px; font-weight: 700; }
 .film-wish-line button span { font-size: 1rem; }
+.film-wish-line button { white-space: nowrap; }
+.film-wish-line button .wish-send-label { font-size: inherit; }
+.film-wish-line button:disabled { cursor: wait; opacity: .75; transform: none; }
+.film-wish-line input:read-only { opacity: .8; }
+.film-wish .wish-feedback[data-state="error"] { color: #ffe0bc; }
+.wish-lantern-icon { width: 18px; height: 22px; flex-shrink: 0; }
 .button-ripple { position: absolute; width: 20px; height: 20px; border-radius: 50%; background: #ffffff70; pointer-events: none; transform: translate(-50%,-50%); animation: wishRipple .65s ease-out forwards; }
-.wish-spark { position: fixed; width: 4px; height: 4px; border-radius: 50%; pointer-events: none; z-index: 1100; background: #fff2d5; box-shadow: 0 0 8px #efccff; }
+.wish-spark { position: fixed; width: 4px; height: 4px; border-radius: 50%; pointer-events: none; z-index: 1100; background: #fff7d2; box-shadow: 0 0 8px #ffe17f; }
 .film-controls { text-shadow: 0 1px 6px #030616; }
 .film-chapter span::after { box-shadow: 0 0 10px #d9baff88; background: linear-gradient(90deg,#c8b3ed,#fff0d1); }
 @keyframes auroraSail { to { transform: rotate(14deg) scale(1.12) translateY(-3%); opacity: .9; } }
@@ -67,7 +76,7 @@
 @keyframes heartWave { 0% { opacity: 0; transform: scale(.65); } 25% { opacity: .8; } 100% { opacity: 0; transform: scale(2.6); } }
 @keyframes intoTheStars { to { opacity: 0; transform: scale(1.3); filter: blur(6px); } }
 @keyframes buttonGleam { 0%, 62% { transform: translateX(-150%); } 86%, 100% { transform: translateX(150%); } }
-@keyframes invitationGlow { to { box-shadow: 0 5px 0 #9d668580, 0 10px 38px #e5aa9177, 0 0 80px #e2b5fb44, inset 0 1px 0 #fff; } }
+@keyframes invitationGlow { to { box-shadow: 0 4px 0 #a77820, 0 10px 34px #ffc83e55, 0 0 55px #ffe17f20, inset 0 1px 0 #fffef2; } }
 @keyframes wishRipple { to { transform: translate(-50%,-50%) scale(24); opacity: 0; } }
 @media (max-width: 700px) {
     .scene-art { -webkit-mask-image: radial-gradient(ellipse at center, black 25%, #000c 53%, transparent 75%); mask-image: radial-gradient(ellipse at center, black 25%, #000c 53%, transparent 75%); }
@@ -77,7 +86,7 @@
     .finale-actions .celestial-button { min-height: 61px; padding: 11px 17px; border-radius: 17px; }
     .button-copy { flex: 1; }
     .button-copy strong { font-size: .8rem; }
-    .button-copy small { font-size: .56rem; }
+    .button-copy small { font-size: 12px; }
     .button-symbol { font-size: 1.65rem; }
     .film-wish { margin-top: 20px; }
     .film-wish-line { padding-left: 12px; }

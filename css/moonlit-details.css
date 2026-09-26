@@ -1,0 +1,96 @@
+/* Names, a live love clock and a letter that unfolds in moonlight. */
+.galaxy-caption, .film-header, .has-spatial-world .film-header {
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    top: max(18px, calc(env(safe-area-inset-top) + 10px)); left: 50%;
+    width: max-content; max-width: calc(100% - 28px); transform: translateX(-50%);
+    font: 700 clamp(29px, 8.3vw, 42px)/1.3 'Dancing Script', cursive;
+    text-transform: none; letter-spacing: 0; white-space: nowrap;
+    color: #fff4bc; text-shadow: 0 1px 1px #080916;
+}
+.galaxy-caption::before, .film-header::before {
+    content: ''; position: absolute; inset: -18px -12px; z-index: -1; pointer-events: none;
+    background: radial-gradient(ellipse, #ffd95730, transparent 70%);
+    animation: nameHalo 4s ease-in-out infinite alternate;
+}
+.galaxy-caption b, .film-header .sender-name, .film-header .recipient-name {
+    font: inherit; text-transform: none;
+    color: #fff5c3; background: linear-gradient(100deg, #ffe487 20%, #fffef1 40%, #fff3ae 55%, #ffe487 75%);
+    background-size: 220% 100%; background-clip: text; -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; text-shadow: none; animation: nameShine 6s ease-in-out infinite;
+}
+.galaxy-caption > span, .film-header > i {
+    margin: 0; color: #ffe085; font: 400 22px/1 Georgia, serif;
+    text-shadow: 0 0 12px #ffe08599; animation: nameStar 4s ease-in-out infinite;
+}
+.journey-touch-hint { top: max(82px, calc(env(safe-area-inset-top) + 70px)); }
+.love-clock { padding: 15px 0 13px; margin: 18px auto 0; border-block: 1px solid #efcc7738; }
+.love-clock-caption { display: block; color: #fff2c8; font-size: 12px; text-align: center; letter-spacing: .035em; }
+.love-clock-digits { display: grid; grid-template-columns: 1.2fr 1fr 1fr 1fr; gap: 6px; margin-top: 12px; text-align: center; }
+.love-clock-digits > span { position: relative; display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 0; }
+.love-clock-digits > span + span { border-left: 1px solid #efcc7730; }
+.love-clock-digits strong { font: 700 clamp(25px, 7vw, 34px)/1.1 Quicksand, sans-serif; font-variant-numeric: tabular-nums; color: #ffe990; letter-spacing: -.035em; }
+.love-clock-digits small { font-size: 12px; font-weight: 600; color: #fff4d4; }
+.love-clock-digits > span:last-child small::after { content: ''; display: inline-block; width: 4px; height: 4px; margin-left: 5px; border-radius: 50%; background: #ffe990; animation: clockBeat 1s ease-in-out infinite; }
+.letter-modal { perspective: 1400px; background: #060915e8; padding: max(18px, env(safe-area-inset-top)) 16px max(18px, env(safe-area-inset-bottom)); }
+.letter-envelope { position: relative; isolation: isolate; perspective: 1200px; width: 100%; max-width: 620px; height: min(860px, calc(100svh - 44px - env(safe-area-inset-top) - env(safe-area-inset-bottom))); }
+.letter-envelope::before {
+    content: ''; position: absolute; inset: 5% 4% auto; height: 40%; z-index: 2; pointer-events: none;
+    background: linear-gradient(160deg, #ffecac, #be882b); clip-path: polygon(0 0, 100% 0, 50% 100%);
+    transform-origin: 50% 0; opacity: 0; backface-visibility: hidden;
+}
+.letter-modal.active .letter-envelope::before { animation: envelopeOpen .8s ease-in-out both; }
+.letter-envelope .letter-scroll {
+    height: 100%; max-height: 100%; width: 100%; border-radius: 22px;
+    border: 1px solid #fff1bb; padding: 58px 28px 32px; overflow-y: auto; overscroll-behavior: contain;
+    background: radial-gradient(ellipse at 0 0, #ffdfa270, transparent 50%), radial-gradient(ellipse at 100% 100%, #ffd77550, transparent 50%), #fffbee;
+    box-shadow: inset 0 0 0 6px #fff7dc, inset 0 0 0 7px #c69b514f, 0 24px 75px #0009, 0 0 40px #ffd66525;
+    color: #493316; animation: none; scrollbar-color: #c9a152 #fff6dc;
+}
+.letter-modal.active .letter-scroll { animation: moonLetterOpen .95s .12s cubic-bezier(.2,.7,.25,1) both; }
+.letter-envelope .close-btn { top: 10px; right: 10px; z-index: 5; width: 44px; height: 44px; color: #5f4217; border: 1px solid #c79b4c80; background: #fff5d6; box-shadow: 0 2px 8px #74502318; }
+.letter-envelope .close-btn:focus-visible, .letter-envelope .letter-scroll:focus-visible { outline: 2px solid #9b6a1e; outline-offset: 3px; }
+.letter-overline { display: block; margin: 0 0 22px; font-size: 10px; font-weight: 700; letter-spacing: .18em; color: #805c20; }
+.letter-header { padding-bottom: 22px; margin-bottom: 25px; border-bottom: 1px solid #c49a4e66; }
+.letter-photo-frame { margin-bottom: 14px; }
+.letter-girl-photo { width: 106px; height: 106px; border: 4px solid #fffdf3; outline: 1px solid #bb8b36; box-shadow: 0 0 0 7px #e4bc6038, 0 8px 22px #a37a2d30; }
+.letter-girl-photo:hover { transform: none; }
+.photo-caption { color: #73501c; font: 700 20px/1.4 'Dancing Script', cursive; background: none; border: none; margin-top: 12px; padding: 0; }
+.letter-seal-icon { display: grid; place-items: center; margin: 18px auto; width: 46px; height: 46px; border-radius: 50%; color: #79500f; font: 30px/1 Georgia, serif; background: linear-gradient(140deg, #fff2ad, #deb34e); border: 3px double #b48428; box-shadow: 0 3px 0 #b28331, 0 6px 14px #b0822826; }
+.letter-title { font: 700 clamp(26px, 7.5vw, 36px)/1.4 'Dancing Script', cursive; color: #68451a; text-wrap: balance; }
+.letter-body { font: 500 16px/1.95 Quicksand, sans-serif; color: #493316; }
+.letter-paragraph { margin-bottom: 20px; text-indent: 0; overflow-wrap: anywhere; }
+.letter-paragraph:first-child::first-letter { float: left; margin: 1px 7px 0 0; font: 700 46px/1.1 'Playfair Display', Georgia, serif; color: #a07327; }
+.letter-modal.active .letter-paragraph { animation: letterInk .65s var(--reveal-delay, .6s) both; }
+.letter-signature { margin: 25px 0 12px; font: 600 27px/1.6 'Dancing Script', cursive; color: #8a5b1e; }
+.signature-name { display: inline-block; font-size: 36px; }
+.letter-modal.active .signature-name { animation: signatureInk 1s 1.5s both; }
+.letter-postscript { margin-top: 25px; padding-top: 22px; border-top: 1px solid #c49a4e55; font-size: 11px; color: #826127; text-align: center; }
+.letter-stardust { position: absolute; inset: 0; pointer-events: none; z-index: 4; overflow: visible; }
+.letter-stardust span { position: absolute; left: 1%; top: 15%; font-size: 17px; color: #ffe9a3; text-shadow: 0 0 12px #ffcf65; opacity: 0; }
+.letter-stardust span:nth-child(2) { left: 96%; top: 28%; animation-delay: .5s !important; }
+.letter-stardust span:nth-child(3) { left: 3%; top: 62%; animation-delay: 1s !important; }
+.letter-stardust span:nth-child(4) { left: 96%; top: 80%; animation-delay: 1.6s !important; }
+.letter-stardust span:nth-child(5) { left: 60%; top: 1%; animation-delay: 2s !important; }
+.letter-stardust span:nth-child(6) { left: 30%; top: 98%; animation-delay: 2.5s !important; }
+.letter-modal.active .letter-stardust span { animation: letterSpark 3.5s ease-in-out infinite; }
+@keyframes nameShine { 0%, 100% { background-position: 100% 0; } 50% { background-position: 0 0; } }
+@keyframes nameHalo { to { opacity: .55; transform: scale(1.12); } }
+@keyframes nameStar { 50% { transform: rotate(90deg) scale(.8); opacity: .7; } }
+@keyframes clockBeat { 50% { opacity: .3; } }
+@keyframes envelopeOpen { 0%, 12% { transform: rotateX(0); opacity: 1; } 80% { transform: rotateX(170deg); opacity: .8; } 100% { transform: rotateX(180deg); opacity: 0; } }
+@keyframes moonLetterOpen { from { opacity: 0; transform: translateY(55px) rotateX(-16deg) scale(.94); } to { opacity: 1; transform: none; } }
+@keyframes letterInk { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@keyframes signatureInk { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0); } }
+@keyframes letterSpark { 0%, 100% { opacity: 0; transform: translateY(8px) scale(.6); } 45% { opacity: 1; } 80% { opacity: 0; transform: translateY(-28px) scale(1.1); } }
+@media (max-width: 360px) {
+    .galaxy-caption, .film-header, .has-spatial-world .film-header { gap: 9px; font-size: 29px; }
+    .letter-envelope .letter-scroll { padding: 58px 21px 28px; }
+    .love-clock { margin-top: 12px; padding-block: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .galaxy-caption::before, .film-header::before, .galaxy-caption b, .film-header .sender-name,
+    .film-header .recipient-name, .galaxy-caption > span, .film-header > i,
+    .love-clock-digits > span:last-child small::after, .letter-modal.active .letter-envelope::before,
+    .letter-modal.active .letter-scroll, .letter-modal.active .letter-paragraph,
+    .letter-modal.active .signature-name, .letter-modal.active .letter-stardust span { animation: none; }
+}

@@ -6,12 +6,15 @@
 document.addEventListener('DOMContentLoaded', () => {
     applyConfiguration();
     const audioController = new RomanticAudioPlayer(CONFIG.audioSrc);
+    // Request playback before the scene engines and textures start loading.
+    initBackgroundMusic(audioController);
     const film = new MoonlightCinema();
     const opening = document.getElementById('opening-screen');
     let entering = false;
     const enterFilm = () => {
         if (entering) return;
         entering = true;
+        film.requestGyroPermission?.();
         document.getElementById('skip-opening-btn').disabled = true;
         film.start();
         opening.classList.add('fade-out');
@@ -23,7 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 900);
     };
     const galaxyOpening = new GalaxyOpening({ onComplete: enterFilm });
-    document.getElementById('skip-opening-btn').addEventListener('click', enterFilm);
+    document.getElementById('skip-opening-btn').addEventListener('click', () => {
+        film.requestGyroPermission?.();
+        enterFilm();
+    });
     // Create the decorative engines only when a wish is actually released.
     let lanternEngine, fireworkEngine;
     initWishBox({ spawnCustomWish(...args) {
@@ -35,7 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
     } });
     initLoveCounter();
     initLoveLetter();
-    initMusicToggle(audioController);
 });
 
 /**
@@ -79,22 +84,13 @@ function initLoveCounter() {
     const hoursEl = document.getElementById('counter-hours');
     const minutesEl = document.getElementById('counter-minutes');
     const secondsEl = document.getElementById('counter-seconds');
-    const startDateTextEl = document.getElementById('start-date-text');
 
     if (!daysEl) return;
 
     // ISO timestamp with an explicit offset keeps the instant identical worldwide.
-    const [year, month, day] = CONFIG.anniversaryDate.split('-').map(Number);
     const startTime = CONFIG.anniversaryTime;
     const startTimestamp = `${CONFIG.anniversaryDate}T${startTime}:00${CONFIG.anniversaryUtcOffset}`;
     const startDate = new Date(startTimestamp);
-
-    if (startDateTextEl) {
-        const formattedDate = `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
-        startDateTextEl.textContent = `${startTime} · ${formattedDate}`;
-        startDateTextEl.setAttribute('datetime', startTimestamp);
-        startDateTextEl.title = 'Giờ Việt Nam (UTC+7)';
-    }
 
     function update() {
         const now = new Date();
@@ -125,7 +121,7 @@ function initLoveCounter() {
 }
 
 /**
- * Quản lý Bức thư tình dưới ánh trăng với hiệu ứng Typewriter
+ * Mở lá thư ánh trăng; giữ toàn bộ nội dung sẵn sàng để đọc và cuộn.
  */
 function initLoveLetter() {
     const openLetterBtn = document.getElementById('open-letter-btn');
@@ -135,14 +131,12 @@ function initLoveLetter() {
 
     if (!openLetterBtn || !letterModal) return;
 
-    let isTyping = false;
-    let typeTimeout = null;
-
     openLetterBtn.addEventListener('click', () => {
+        renderLetter();
+        letterModal.querySelector('.letter-scroll').scrollTop = 0;
         letterModal.inert = false;
         letterModal.classList.add('active');
         document.body.style.overflow = 'hidden';
-        startTypewriter();
         closeLetterBtn.focus();
     });
 
@@ -152,58 +146,38 @@ function initLoveLetter() {
     });
     letterModal.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') closeModal();
-        if (e.key === 'Tab') { e.preventDefault(); closeLetterBtn.focus(); }
+        if (e.key === 'Tab') {
+            const focusable = [...letterModal.querySelectorAll('button, [tabindex="0"]')];
+            const first = focusable[0], last = focusable[focusable.length - 1];
+            if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+            else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+        }
     });
 
     function closeModal() {
         letterModal.classList.remove('active');
         letterModal.inert = true;
         document.body.style.overflow = '';
-        if (typeTimeout) clearTimeout(typeTimeout);
-        isTyping = false;
         openLetterBtn.focus({ preventScroll: true });
     }
 
-    function startTypewriter() {
-        letterBody.innerHTML = '';
-        isTyping = true;
-        
-        let pIndex = 0;
-        let charIndex = 0;
-        const paragraphs = CONFIG.letterContent;
-
-        function typeNext() {
-            if (!isTyping) return;
-
-            if (pIndex < paragraphs.length) {
-                let currentP = letterBody.children[pIndex];
-                if (!currentP) {
-                    currentP = document.createElement('p');
-                    currentP.className = 'letter-paragraph';
-                    letterBody.appendChild(currentP);
-                }
-
-                const currentText = paragraphs[pIndex];
-                if (charIndex < currentText.length) {
-                    currentP.textContent += currentText.charAt(charIndex);
-                    charIndex++;
-                    typeTimeout = setTimeout(typeNext, 25);
-                } else {
-                    pIndex++;
-                    charIndex = 0;
-                    typeTimeout = setTimeout(typeNext, 280);
-                }
-            } else {
-                // Thêm chữ ký tình yêu
-                const signEl = document.createElement('div');
-                signEl.className = 'letter-signature';
-                signEl.innerHTML = `Mãi yêu em,<br><span class="signature-name">${CONFIG.senderName}</span>`;
-                letterBody.appendChild(signEl);
-                isTyping = false;
-            }
-        }
-
-        typeNext();
+    function renderLetter() {
+        letterBody.replaceChildren();
+        CONFIG.letterContent.forEach((text, index) => {
+            const paragraph = document.createElement('p');
+            paragraph.className = 'letter-paragraph';
+            paragraph.textContent = text;
+            paragraph.style.setProperty('--reveal-delay', `${.55 + index * .12}s`);
+            letterBody.appendChild(paragraph);
+        });
+        const signature = document.createElement('div');
+        signature.className = 'letter-signature';
+        signature.append('Mãi yêu em,', document.createElement('br'));
+        const name = document.createElement('span');
+        name.className = 'signature-name';
+        name.textContent = CONFIG.senderName;
+        signature.appendChild(name);
+        letterBody.appendChild(signature);
     }
 }
 
@@ -215,6 +189,8 @@ function initWishBox(lanternEngine, fireworkEngine) {
     const sendWishBtn = document.getElementById('send-wish-btn');
     const presetPills = document.querySelectorAll('.wish-preset-pill');
     const wishFeedback = document.getElementById('wish-feedback');
+    let saving = false;
+    let feedbackTimer;
 
     if (!sendWishBtn) return;
 
@@ -226,52 +202,68 @@ function initWishBox(lanternEngine, fireworkEngine) {
         });
     });
 
-    sendWishBtn.addEventListener('click', () => {
+    sendWishBtn.addEventListener('click', async () => {
+        if (saving) return;
         const text = wishInput.value.trim();
         if (!text) {
             wishInput.focus();
             return;
         }
 
-        // Tạo đèn ước vút lên trời
-        const startX = window.innerWidth / 2 + (Math.random() - 0.5) * 160;
-        const startY = window.innerHeight - 20;
-        lanternEngine.spawnCustomWish(text, startX, startY);
-
-        // Hiệu ứng pháo hoa chúc mừng điều ước
-        fireworkEngine.createBurst(startX, window.innerHeight * 0.65, 45, true);
-
-        // Hiển thị thông báo cảm xúc
-        wishFeedback.textContent = `✨ Điều ước: "${text}" đã được gửi lên vầng trăng! Chúc điều ước sớm thành hiện thực ❤️`;
+        saving = true;
+        clearTimeout(feedbackTimer);
+        sendWishBtn.disabled = true;
+        sendWishBtn.setAttribute('aria-busy', 'true');
+        wishInput.readOnly = true;
+        wishInput.blur();
+        const buttonLabel = sendWishBtn.querySelector('.wish-send-label');
+        buttonLabel.textContent = 'Đang thả…';
+        wishFeedback.dataset.state = 'saving';
+        wishFeedback.textContent = 'Đang gửi gắm điều ước của em…';
         wishFeedback.classList.add('show');
-        
-        // Gửi lên server PHP (InfinityFree) nếu có backend
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 15000);
+        let saved = false;
         try {
-            fetch('api/wish.php', {
+            const response = await fetch('api/wish.php', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                credentials: 'same-origin',
+                signal: controller.signal,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Wish-Token': document.querySelector('meta[name="wish-token"]')?.content || ''
+                },
                 body: JSON.stringify({
                     wish: text,
                     author: CONFIG.recipientName
                 })
-            }).catch(() => {
-                // Môi trường offline hoặc mở file:// tĩnh, không ảnh hưởng trải nghiệm
             });
-        } catch (err) {}
+            const result = await response.json();
+            if (!response.ok || result.success !== true || result.storage !== 'mysql') {
+                wishFeedback.textContent = typeof result.message === 'string' ? result.message : 'Chưa lưu được điều ước. Em thử thả đèn lại nhé.';
+                return;
+            }
+            saved = true;
+        } catch (error) {
+            wishFeedback.textContent = 'Chưa nhận được xác nhận lưu điều ước. Nội dung vẫn còn đây, em thử lại nhé.';
+        } finally {
+            clearTimeout(timeout);
+            saving = false;
+            sendWishBtn.disabled = false;
+            sendWishBtn.removeAttribute('aria-busy');
+            wishInput.readOnly = false;
+            buttonLabel.textContent = 'Thả đèn';
+            wishFeedback.dataset.state = saved ? 'saved' : 'error';
+        }
+        if (!saved) return;
 
-        // Lưu backup vào LocalStorage
-        try {
-            const localWishes = JSON.parse(localStorage.getItem('midautumn_wishes') || '[]');
-            localWishes.unshift({ wish: text, time: new Date().toISOString() });
-            localStorage.setItem('midautumn_wishes', JSON.stringify(localWishes.slice(0, 20)));
-        } catch (e) {}
-
-        setTimeout(() => {
-            wishFeedback.classList.remove('show');
-        }, 5000);
-
+        // Release the lantern only after MySQL confirms the INSERT succeeded.
+        wishFeedback.textContent = `🏮 Đèn trời đã mang điều ước: "${text}" bay lên ngân hà. Mong điều em ước sớm thành hiện thực 💛`;
         wishInput.value = '';
-        wishInput.blur();
+        const startX = window.innerWidth / 2 + (Math.random() - .5) * 160;
+        lanternEngine.spawnCustomWish(text, startX, window.innerHeight - 20);
+        fireworkEngine.createBurst(startX, window.innerHeight * .65, 45, true);
+        feedbackTimer = setTimeout(() => wishFeedback.classList.remove('show'), 6500);
     });
 
     wishInput.addEventListener('keydown', (e) => {
@@ -282,33 +274,20 @@ function initWishBox(lanternEngine, fireworkEngine) {
 }
 
 /**
- * Quản lý nút phát / dừng âm nhạc
+ * Khởi động nhạc nền tự động và thử lại sau tương tác nếu autoplay bị chặn.
  */
-function initMusicToggle(audioController) {
-    const musicBtn = document.getElementById('music-toggle-btn');
-    if (!musicBtn) return;
-    musicBtn.setAttribute('aria-pressed', 'false');
-
-    musicBtn.addEventListener('click', () => {
-        if (audioController.isPlaying) {
-            audioController.pause();
-            musicBtn.classList.remove('playing');
-        } else {
-            audioController.play();
-            musicBtn.classList.add('playing');
-        }
-    });
-
-    // Khi nhạc bắt đầu phát
-    audioController.onPlayStateChange = (isPlaying) => {
-        document.getElementById('music-label').textContent = isPlaying ? 'Tắt nhạc' : 'Bật nhạc';
-        musicBtn.setAttribute('aria-pressed', String(isPlaying));
-        if (isPlaying) {
-            musicBtn.classList.add('playing');
-        } else {
-            musicBtn.classList.remove('playing');
-        }
+function initBackgroundMusic(audioController) {
+    const start = () => audioController.play().catch(() => {});
+    audioController.onPlayStateChange = playing => {
+        document.body.dataset.music = playing ? 'playing' : 'waiting';
     };
+    document.body.dataset.music = 'waiting';
+    start();
+    // Any ordinary interaction can unlock audio when Chrome blocks autoplay.
+    ['pointerup', 'touchend', 'keydown', 'click'].forEach(type => {
+        document.addEventListener(type, start, { passive: true });
+    });
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) start(); });
 }
 
 /**
@@ -319,7 +298,10 @@ class RomanticAudioPlayer {
     constructor(src) {
         this.src = src;
         this.audio = new Audio();
+        this.audio.autoplay = true;
+        this.audio.preload = 'auto';
         this.audio.loop = true;
+        this.audio.volume = .55;
         this.audio.src = src;
         
         this.isPlaying = false;
@@ -327,35 +309,34 @@ class RomanticAudioPlayer {
         this.audioCtx = null;
         this.synthTimer = null;
         this.onPlayStateChange = null;
+        this.wantsPlayback = false;
 
         // Lắng nghe lỗi nạp file âm thanh để chuyển sang synth
         this.audio.addEventListener('error', () => {
             this.isSynth = true;
-            if (this.isPlaying) {
-                this.playSynthMelody();
-            }
+            if (this.wantsPlayback) this.playSynthMelody().catch(() => {});
         });
     }
 
-    play() {
-        this.isPlaying = true;
-        if (this.onPlayStateChange) this.onPlayStateChange(true);
-
-        if (!this.isSynth) {
-            const promise = this.audio.play();
-            if (promise !== undefined) {
-                promise.catch(() => {
-                    // Trình duyệt chặn autoplay hoặc file không tồn tại
-                    this.isSynth = true;
-                    this.playSynthMelody();
-                });
-            }
-        } else {
-            this.playSynthMelody();
+    async play() {
+        this.wantsPlayback = true;
+        if (this.isSynth) return this.playSynthMelody();
+        if (this.isPlaying && !this.audio.paused) return true;
+        try {
+            await this.audio.play();
+            this.isPlaying = true;
+            this.onPlayStateChange?.(true);
+            return true;
+        } catch (error) {
+            // A permissions block is not a missing track; retry on the next touch.
+            if (error.name === 'NotAllowedError') return false;
+            this.isSynth = true;
+            return this.playSynthMelody();
         }
     }
 
     pause() {
+        this.wantsPlayback = false;
         this.isPlaying = false;
         if (this.onPlayStateChange) this.onPlayStateChange(false);
 
@@ -363,19 +344,23 @@ class RomanticAudioPlayer {
             this.audio.pause();
         } else {
             if (this.synthTimer) clearTimeout(this.synthTimer);
+            this.synthTimer = null;
             if (this.audioCtx && this.audioCtx.state === 'running') {
                 this.audioCtx.suspend();
             }
         }
     }
 
-    playSynthMelody() {
+    async playSynthMelody() {
         if (!this.audioCtx) {
             const AudioContext = window.AudioContext || window.webkitAudioContext;
             this.audioCtx = new AudioContext();
-        } else if (this.audioCtx.state === 'suspended') {
-            this.audioCtx.resume();
         }
+        if (this.audioCtx.state !== 'running') await this.audioCtx.resume();
+        if (!this.wantsPlayback || this.audioCtx.state !== 'running') return false;
+        this.isPlaying = true;
+        this.onPlayStateChange?.(true);
+        if (this.synthTimer !== null) return true;
 
         // Giai điệu huyền thoại "Ánh trăng nói hộ lòng tôi" (The Moon Represents My Heart)
         // [Tần số Hz, Độ dài tính theo giây]
@@ -423,6 +408,7 @@ class RomanticAudioPlayer {
         };
 
         playNext();
+        return true;
     }
 
     playMusicBoxChime(freq, duration) {
