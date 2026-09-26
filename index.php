@@ -11,6 +11,7 @@ header('Content-Type: text/html; charset=utf-8');
     <meta name="wish-token" content="<?= htmlspecialchars($wishToken, ENT_QUOTES, 'UTF-8') ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Tết Trung Thu Tặng Mĩ Diên 🌕💛 Tấn Anh</title>
+    <link rel="icon" type="image/png" href="images/chibi-trung-thu-ngam-trang.png">
     
     <!-- Open Graph Meta Tags (Hiển thị preview tuyệt đẹp khi gửi qua Zalo / Facebook Messenger) -->
     <meta property="og:title" content="Tết Trung Thu Dành Riêng Cho Mĩ Diên 🌕💛">
@@ -42,13 +43,8 @@ header('Content-Type: text/html; charset=utf-8');
     <div id="opening-screen" class="opening-screen">
         <canvas id="galaxy-canvas" aria-hidden="true"></canvas>
         <div class="galaxy-vignette" aria-hidden="true"></div>
-        <div class="galaxy-caption" aria-hidden="true"><b class="sender-name">Tấn Anh</b> <span>✦</span> <b class="recipient-name">Mĩ Diên</b></div>
+        <div class="galaxy-caption"><b>Tấn Anh</b> <span aria-hidden="true">✦</span> <b>Mỹ Duyên</b></div>
         <div class="opening-card constellation-card">
-            <div class="constellation-intro">
-                <span class="eyebrow">MỘT BẦU TRỜI DÀNH RIÊNG CHO EM</span>
-                <h1 id="welcome-title" class="welcome-title">Món Quà Trung Thu Gửi Mĩ Diên</h1>
-                <p id="welcome-subtitle" class="welcome-subtitle">Một câu chuyện nhỏ, viết bằng ánh sao. Dành riêng cho Mĩ Diên.</p>
-            </div>
 
             <div class="constellation-stage" id="constellation-stage" aria-label="Chòm sao trái tim">
                 <div class="constellation-halo"></div>
@@ -80,10 +76,9 @@ header('Content-Type: text/html; charset=utf-8');
                 <span class="constellation-star" style="--x:62%;--y:12%" data-star="14" aria-hidden="true"></span>
             </div>
 
-            <p id="constellation-status" class="constellation-status" role="status" aria-live="polite">Có những vì sao, sinh ra là để tìm thấy nhau.</p>
-            <button id="skip-opening-btn">Đến đêm trăng →</button>
+            <p id="constellation-status" hidden></p>
+            <button id="skip-opening-btn" aria-label="Đến đêm trăng" title="Đến đêm trăng"><span aria-hidden="true">→</span></button>
         </div>
-        <span class="galaxy-footnote" aria-hidden="true">MÙA TRĂNG ĐẦU TIÊN CỦA CHÚNG MÌNH · 2026</span>
     </div>
 
     <!-- GIAO DIỆN CHÍNH (MAIN CONTENT) -->

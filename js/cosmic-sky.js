@@ -112,22 +112,45 @@ class CosmicSky {
                 ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + (x - w / 2) * warp * .2, y + (y - h / 2) * warp * .2); ctx.stroke();
             }
         }
+        if (reduced) this.meteors = [];
         if (!reduced && this.time > this.nextMeteor) {
-            this.meteors.push({ x: Math.random() * w * .95, y: Math.random() * h * .65, age: 0, speed: 240 + Math.random() * 180 });
-            this.nextMeteor = this.time + 1.1 + Math.random() * 1.5;
+            const angle = (.20 + Math.random() * .10) * Math.PI;
+            this.meteors.push({
+                x: w * (.35 + Math.random() * .65), y: Math.random() * h * .3,
+                age: 0, duration: 1.3 + Math.random() * .6,
+                speed: Math.min(w, h) * (.45 + Math.random() * .3),
+                length: Math.min(230, w * .32),
+                vx: -Math.cos(angle), vy: Math.sin(angle)
+            });
+            this.nextMeteor = this.time + .65 + Math.random() * 1.2;
         }
-        this.meteors = this.meteors.filter(m => m.age < 1.6);
+        this.meteors = this.meteors.filter(m => m.age < m.duration);
+        ctx.save();
+        ctx.globalCompositeOperation = 'screen';
+        ctx.lineCap = 'round';
         for (const m of this.meteors) {
-            m.age += reduced ? 0 : dt;
-            const x = m.x - m.age * m.speed, y = m.y + m.age * m.speed * .38;
-            const alpha = Math.max(0, Math.sin(m.age / 1.6 * Math.PI));
-            const glow = ctx.createLinearGradient(x, y, x + 160, y - 61);
+            m.age += dt;
+            const x = m.x + m.vx * m.age * m.speed, y = m.y + m.vy * m.age * m.speed;
+            const alpha = Math.max(0, Math.sin(Math.min(1, m.age / m.duration) * Math.PI));
+            const length = m.length * Math.min(1, m.age * 4);
+            const tailX = x - m.vx * length, tailY = y - m.vy * length;
+            const glow = ctx.createLinearGradient(x, y, tailX, tailY);
             glow.addColorStop(0, `rgba(255,253,231,${alpha})`);
-            glow.addColorStop(.15, `rgba(255,207,83,${alpha * .75})`);
+            glow.addColorStop(.2, `rgba(255,221,150,${alpha * .8})`);
+            glow.addColorStop(.6, `rgba(177,199,255,${alpha * .3})`);
             glow.addColorStop(1, 'transparent');
-            ctx.strokeStyle = glow; ctx.lineWidth = 1.4;
-            ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + 160, y - 61); ctx.stroke();
+            ctx.strokeStyle = glow;
+            ctx.globalAlpha = .18; ctx.lineWidth = 7;
+            ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(tailX, tailY); ctx.stroke();
+            ctx.globalAlpha = 1; ctx.lineWidth = 1.7; ctx.stroke();
+            const halo = ctx.createRadialGradient(x, y, 0, x, y, 9);
+            halo.addColorStop(0, `rgba(255,250,225,${alpha})`);
+            halo.addColorStop(.25, `rgba(255,226,160,${alpha * .5})`);
+            halo.addColorStop(1, 'transparent');
+            ctx.fillStyle = halo;
+            ctx.beginPath(); ctx.arc(x, y, 9, 0, Math.PI * 2); ctx.fill();
         }
+        ctx.restore();
     }
 
     destroy() { this.nebula.width = this.nebula.height = 0; this.canvas.width = this.canvas.height = 0; }
