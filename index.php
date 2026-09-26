@@ -3,6 +3,10 @@ require_once __DIR__ . '/api/bootstrap.php';
 $wishToken = $_SESSION['wish_token'];
 session_write_close();
 header('Content-Type: text/html; charset=utf-8');
+$scheme = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http';
+$host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+$basePath = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php')), '/');
+$previewImage = $scheme . '://' . $host . $basePath . '/images/chibi-trung-thu-ngam-trang.png';
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -16,7 +20,9 @@ header('Content-Type: text/html; charset=utf-8');
     <!-- Open Graph Meta Tags (Hiển thị preview tuyệt đẹp khi gửi qua Zalo / Facebook Messenger) -->
     <meta property="og:title" content="Tết Trung Thu Dành Riêng Cho Mĩ Diên 🌕💛">
     <meta property="og:description" content="Món quà Trung Thu ngọt ngào, lung linh và dễ thương nhất từ Tấn Anh gửi tặng Trần Thị Mỹ Duyên (Mĩ Diên).">
-    <meta property="og:image" content="images/bg-moon.jpg">
+    <meta property="og:image" content="<?= htmlspecialchars($previewImage, ENT_QUOTES, 'UTF-8') ?>">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:alt" content="Tấn Anh và Mỹ Duyên cùng ngắm trăng Trung Thu">
     <meta property="og:type" content="website">
     
     <!-- Google Fonts Hiện Đại -->
